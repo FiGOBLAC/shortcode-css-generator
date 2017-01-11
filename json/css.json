@@ -1,0 +1,57 @@
+{
+
+    "background": "",
+    "background-color": "",
+    "background-opacity": "",
+    "background-image": "",
+
+    "background-size": "",
+    "background-repeat": "no_repeat",
+    "background-attachment": "",
+    "background-position": "",
+
+    "margin": "",
+    "margin-top": "",
+    "margin-bottom": "",
+    "margin-left": "",
+    "margin-right": "",
+    "padding": "",
+    "padding-top": "",
+    "padding-bottom": "",
+    "padding-left": "",
+    "padding-right": "",
+
+    "border": "",
+    "borde-left": "",
+    "border-right": "",
+    "border-top": "",
+    "border-bottom": "",
+    "border-color": "",
+    "border-shadow": "",
+    "border-radius": "",
+    "border-image": "",
+    "border-image_slice": "",
+
+    "-webkit-border-image": "",
+    "-moz-border-image": "",
+    "-o-border-image": "",
+    "-ms-border-image": "",
+
+    "overflow": "",
+
+    "height": "",
+    "width": "",
+    "max-width": "",
+
+    "display": "",
+    "vertical-align": "",
+
+    "font-style": "",
+    "font-family": "",
+    "font-size": "",
+    "line_height": "",
+    "color": "",
+    "text-align": "",
+
+    "opacity": ""
+}
