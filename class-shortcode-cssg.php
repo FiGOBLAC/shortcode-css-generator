@@ -20,7 +20,7 @@
  * @subpackage Shortcode_CG/public
  * @author     FiGO BLAC <figo@figoblac.com>
  */
-class Shortcode_CSSG {
+class Church_Core_Shortcode_CSSG {
 
     /**
      * The shortcodes styles set for each shortcode.
@@ -28,7 +28,7 @@ class Shortcode_CSSG {
      * @since    1.0.0
      * @access   public
      */
-    protected $excludes = array();
+    protected $shortcode_excludes;
     /**
      * The shortcodes styles set for each shortcode.
      * 
@@ -283,11 +283,11 @@ class Shortcode_CSSG {
             $user_option = $shortcode_defaults[ $property_name ]; 
             
             if( is_string( $property_config ) ) :
-            $custom_styles[] = $this->create_css_from_custom_property( $user_option, $property_config );
+            $custom_styles[] = $this->generate_css_from_custom_property( $user_option, $property_config );
             endif;
             
             if( is_object( $property_config ) ) :
-            $custom_styles[] = $this->create_css_from_custom_property_object( $user_option, $property_name, $property_config );
+            $custom_styles[] = $this->generate_css_from_custom_property_object( $user_option, $property_name, $property_config );
             endif;
             
         }
@@ -318,7 +318,7 @@ class Shortcode_CSSG {
      * @param  $defaults     The shortcode defaults.
      * @return               Shortcode css styles.
      */
-    private function create_css_from_custom_property( $user_option, $configuration ) { 
+    private function generate_css_from_custom_property( $user_option, $configuration ) { 
         
         // Sir, Maam... I need to see some id.
         $shortcode_id = $this->shortcode_id;
@@ -359,34 +359,40 @@ class Shortcode_CSSG {
      * @param  $defaults     The shortcode defaults.
      * @return               Shortcode css styles.
      */
-    private function create_css_from_custom_property_object( $user_option, $property_name, $property_config ) {
+    private function generate_css_from_custom_property_object( $user_option, $property_name, $property_config ) {
         
         // name of the current shortcode.
         $shortcode = $this->shortcode;      
         
         // name of the current shortcode
         $shortcode_id = $this->shortcode_id;
+                
+        // Check if elements property exists and if this shortcode is assigned to elements.
+        $elements_set =  property_exists( $property_config, 'elements' ) && property_exists( $property_config->elements, $shortcode );
         
-        // Get the target elements specific to the current shortcode.
-        $local_elements = property_exists( $property_config->elements, $shortcode ) ? $property_config->elements->$shortcode : FALSE; 
+        // Get the target elements specific to the current shortcode if they exists.
+        $local_elements = $elements_set && ! empty ( $property_config->elements->$shortcode ) ? $property_config->elements->$shortcode : FALSE; 
         
-        // Get the target elements used by all shortcodes.
-        $global_elements = property_exists( $property_config->elements, 'all' ) ? $property_config->elements->all : FALSE;
+        // Check if elements are Globally set.
+        $global_elements_set = property_exists( $property_config, 'elements' ) && property_exists( $property_config->elements, 'all' );
+                
+        // get the target elements used by all shortcodes if they exists.
+        $global_elements = $global_elements_set ? $property_config->elements->all : FALSE;
         
         // Check whether element are active
-        $has_elements =( ! empty( $local_elements ) ) || ! ( empty( $global_elements ) );
+        $has_elements = ( ! empty( $local_elements ) ) || ! ( empty( $global_elements ) );
         
-        // Check if restrictions have been set.
-        $has_restrictions = ( isset( $property_config->restrictions ) && is_array( $property_config->restrictions->$shortcode ));
+        // Check if restrictions property exists and if this shortcode is assigned to restrictions.
+        $restrict_set =  property_exists( $property_config, 'restrictions' ) && property_exists( $property_config->restrictions, $shortcode );
+        
+        // Make sure restriction are properly formated as an array and check if restrictions exists for this shortcode.
+        $has_restrictions = $restrict_set && is_array( $property_config->restrictions->$shortcode ) && ( ! empty( $property_config->restrictions->$shortcode ) );
         
         // Check if current user option is allowed.
         $is_restricted = ( $has_restrictions && ( ! in_array( $user_option, $property_config->restrictions->$shortcode ) ) );
         
         // Get the css declaration selected for the current shortcode.
         $declaration = property_exists( $property_config->declarations, $user_option ) ? (array)$property_config->declarations->$user_option : FALSE;
-        
-        // check if elemets are  Globally set.
-        $global_elements = property_exists( $property_config->elements, 'all' ) ? $property_config->elements->all : FALSE;
         
         if( ( FALSE == $declaration ) || ( ! $has_elements ) ){
             return;
@@ -404,7 +410,7 @@ class Shortcode_CSSG {
         // CSS for specific shortcodes.
         $local_css      = ! empty( $local_elements ) ? $shortcode_id . ' '. $local_elements . '{' . implode( $css_declaration ) . '}' : FALSE;
         
-        // CSS used by all shortcoces.
+        // CSS used by all shortcodes.
         $global_css     = ! empty( $global_elements ) ? $shortcode_id . ' '. $global_elements . '{' . implode( $css_declaration ) . '}' : FALSE;
         
         // Combine css declatrations.
@@ -419,7 +425,7 @@ class Shortcode_CSSG {
       * @since  1.0.0
       * @acces  public
       */   
-    public function generate_shortcode_css_stylesheet( $shortcode, $defaults, $wp_shortcode = false ) { 
+    public function generate_shortcode_css_stylesheet( $shortcode, $defaults ) { 
         
         // Shared variables
         $this->setup_shortcode_vars( $shortcode, $defaults );
@@ -439,11 +445,8 @@ class Shortcode_CSSG {
         // Get the theme options class instance using RF's beautiful proxy function.
         $proxy = ReduxFrameworkInstances::get_instance( 'TC_Options' );
         
-        // Get the name of the file that will contain our generated css.
-        $cssg_file = ( false !== $wp_shortcode ) ? $wp_shortcode. '-shortcode-cssg' : 'shortcode-cssg';
-        
         // Set the path to the file that will output our generated css.
-        $filename  = plugin_dir_path( dirname( __FILE__ ) ) . "public/css/$cssg_file.css";
+        $filename  = plugin_dir_path( dirname( __FILE__ ) ) . "public/css/shortcode-cssg.css";
         
         // Almost there... Just need to apply some filters.
         $styles = apply_filters( 'filter_generated_shortcode_css', $styles );        
