@@ -25,46 +25,87 @@ shortcode_cssg( $shortcode, $defaults );
 
 </pre>
 
-## Edit and customize your list of allowed css properties
-Navigate to the css.json folder. For each css property you wish to use, add a line with the name of the css property wrapped in double quotes followed by a semi-colon. Be careful to follow the correct formatting.
-Examples:
-}
-"border" : "",
-"margin" : "",
-"margin-left" ""
+##Create custom css options.
+Creating custom css properties for shortcode options are extremely simple and follows a very simple format. For example if you wanted to create an option that allows the user to select a link color, you would  choose a name to use for the option and register into the json file as a key. you would then choose the selector you want the option to affect followed by two underscores and then the css color property and register the formata as the value in the json file as follows:
+
+{
+  "link_color: "a__color",
 }
 
-If you want to add a placedhoder you may do so in between the quotes after the semi-colon. This will be overriden when the option is used via shortcode defaults.
-Example: 
-"border: "1px solid lightgrey",
+Then you would just use this option in the shortcode like this:
 
-Once you have added all the css properties you want to use make sure to remove the comma from the very last entry.
+[sample_shortcode link-color: "green" ] My sample shortcode [/sample_shortcode]
 
+The generator will use the id of the current shortcode and output a css declaration that will look like this:
 
-## Creating custom css properties
-Sometimes, depending on the nature of the shortcode you are creating, you may need your css actions to be a little more specfic or more descriptive of what it does. For example lets say you need to give the shortcode the option to set a color when 'hovering over a link'  Edit the css.config.json file and add the name of the shortcode option followed by the selector, two underscores and the csss property that will represent the value type:
+#shortcode_id a {
+    color: "green";
+}
+
+Thats it! Pretty neat huh? You can use any css property as long as you prepend with either an attribute, id or class selector followed by two underscores.
+
+## Targeting A class
+To target a class just use the '.' selector with the class name and use '#' whene targeting and id.
+
+{
+    "link-color: .my-class__color
+}
+
+## Using pseudo classes
+To use pseudo classes like :hover just add :psuedo-name after the selector.
+Example:
+
+{
+  "link_color: "a:hover__color"
+}
+
+## Targeting Multiple Selectors
+When targeting multiple selectors you will need to use the '%1$s' format string between each selector set which will be replaced by the shortcode's id.
 Example:
 {
-"link-color: "a:hover__color"
+  "text-height: ".my-class, %1$s p__line-height",
 }
 
- The "link-color" is the name of the shortcode option which will be used to set the link color on the shortcode like this:
- [sample_shortcode link-color='green'] My Sample Shortcode [/sample_shortcode]
- 
- The css output will by the generator will  use the shortcode id to procude a  css declaration that look like this:
- #shortcode_id a:hover { 
+The generated css ouput for this configuration will be
+
+#shortcode_id .my-class, #shortcode_id a:hover {
     color: green;
- }
- 
- What if you wanted to add color to a font icon that has a class name of .ficon or change the fontize? Edit the css.config.json file and add..
- {
- "link-color: "a__font=size"
- "link-color: ".ficon__color"
- "link-color: "a:hover__color"
-
 }
- 
- Pretty neat huh?
+
+## Targeting Children
+
+Example:
+{
+  "container_height: ".my-header-class > div_height",
+}
+
+## Targeting Other Elements
+
+Example:
+{
+  "header_background: ".my-header-class > div_background_color",
+}
 
 
-## Createing custom css propoerty objects
+## Targeting Element Children By Classname
+
+Example:
+{
+  "list_font_size: "my-new-class > li.active > a__font-size",
+}
+
+There are many more compbinations you can you use depending on your needs so experiment and see a
+
+##Important
+* Do not use two underscores for selector names.
+* You can only use one css property per line for example you cant do this
+{
+  "link_color: "a:hover__color, a__background-color",
+}
+
+## Complex Css Configurations
+The 
+
+if you need this kind of setup or need something more complex you can create your own css property object.
+
+
