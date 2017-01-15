@@ -16,7 +16,8 @@ $defaults = extract( array(
 
 $defaults = shortcode_atts( $defaults, $atts, $shortcode );
 </pre>
-All you need to do is call the shortcode_cssg() function and pass in the shortcode name as the first parameter and then pass in the shortcode defaults as the second parameter. Thats it. Now your shortcode is ready to generate css.
+
+All you need to do is call the shortcode_cssg() function and pass in the shortcode name as the first parameter and then pass in the shortcode defaults as the second parameter.
 Example:
 
 <pre>
@@ -25,8 +26,10 @@ shortcode_cssg( $shortcode, $defaults );
 
 </pre>
 
-##Create custom css options.
-Creating custom css properties for shortcode options are extremely simple and follows a very simple format. For example if you wanted to create an option that allows the user to select a link color, you would  choose a name to use for the option and register into the json file as a key. you would then choose the selector you want the option to affect followed by two underscores and then the css color property and register the formata as the value in the json file as follows:
+Thats it. Now your shortcode is ready to generate css.
+ 
+##Create custom css Properties options.
+Creating custom css properties for shortcode options are extremely simple and follows a very simple format. For example if you wanted to create an option that allows the user to select a link color, you would choose a name to use for the option and register the name into the json file as a key. you would then choose the selector you want the option to affect followed by two underscores and then the css color property and then register the formate as the value in the json file as follows:
 
 {
   "link_color: "a__color",
@@ -94,17 +97,24 @@ Example:
   "list_font_size: "my-new-class > li.active > a__font-size",
 }
 
-There are many more compbinations you can you use depending on your needs so experiment and see a
+There are many more compbinations you can you use depending on your needs so feel free to experiment.
 
 ##Important
 * Do not use two underscores for selector names.
-* You can only use one css property per line for example you cant do this
+* Unless you create your won custom property object you can only use one css property per line for example you cant do this
 {
   "link_color: "a:hover__color, a__background-color",
 }
 
-## Complex Css Configurations
-The 
+## Create Custom CSS Property Objects
+
+Custom CSS Property Objects are made up of 3 components
+
+###Object Name
+###Elements
+###Restrictions
+###Declarations
+
 
 if you need this kind of setup or need something more complex you can create your own css property object.
 
