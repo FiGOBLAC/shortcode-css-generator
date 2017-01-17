@@ -425,7 +425,7 @@ class Church_Core_Shortcode_CSSG {
       * @since  1.0.0
       * @acces  public
       */   
-    public function generate_shortcode_css_stylesheet( $shortcode, $defaults ) { 
+    public function shortcode_cssg( $shortcode, $defaults ) { 
         
         // Shared variables
         $this->setup_shortcode_vars( $shortcode, $defaults );
