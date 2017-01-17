@@ -68,7 +68,8 @@ class Church_Core_Shortcode_CSSG {
         
         $this->shortcode_styles = array();       
         $this->shortcode_excludes= array();
-   
+
+        $this->set_file_paths();
         $this->get_css_properties();                
         $this->get_custom_css_property_configs();                
 
@@ -79,9 +80,30 @@ class Church_Core_Shortcode_CSSG {
 	 *
 	 * @since    1.0.0
 	 */
+	private function set_file_paths() {
+
+        // The parent directory.
+        $this->scssg_dir =  dirname( __FILE__ , 2 ). '/cssg';
+
+        // Configurations for file paths.
+        $file_path_configs = file_get_contents(  $this->scssg_dir . '/json/configs.json' );
+
+        // File path configs converted to array.
+        $file_paths = json_decode( $file_path_configs, TRUE );
+
+        // The location of the generated css.
+        $this->css_dir = $this->scssg_dir . $file_paths['css_file_path']; var_dump(  $this->css_dir );
+
+	}
+
+	/**
+	 * Register the stylesheets for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
 	private function get_css_properties() {
-     
-        $registered_properties = file_get_contents( plugin_dir_url( __FILE__ ) . 'json/css.json' );
+
+        $registered_properties = file_get_contents(  $this->scssg_dir . '/json/css.json' );
 
         $this->registered_properties = ( json_decode( $registered_properties, true ) );
 
@@ -95,7 +117,7 @@ class Church_Core_Shortcode_CSSG {
 	private function get_custom_css_property_configs() {
 
         // Custom CSS property configurations file.
-        $css_property_configs = file_get_contents( plugin_dir_url( __FILE__ ) . 'json/css-config.json' );
+        $css_property_configs = file_get_contents(  $this->scssg_dir . '/json/css-config.json' );
 
         // Decode Custom CSS property configurations file.
         $this->custom_css_properties = (array) json_decode( $css_property_configs );
@@ -444,10 +466,7 @@ class Church_Core_Shortcode_CSSG {
         
         // Get the theme options class instance using RF's beautiful proxy function.
         $proxy = ReduxFrameworkInstances::get_instance( 'TC_Options' );
-        
-        // Set the path to the file that will output our generated css.
-        $filename  = plugin_dir_path( dirname( __FILE__ ) ) . "public/css/shortcode-cssg.css";
-        
+
         // Almost there... Just need to apply some filters.
         $styles = apply_filters( 'filter_generated_shortcode_css', $styles );        
         
@@ -455,6 +474,6 @@ class Church_Core_Shortcode_CSSG {
         $shortcode_css = array( 'content' => $styles );
         
         // And Voila.. Add the contents to the css file.
-        $proxy->filesystem->execute( 'put_contents', $filename, $shortcode_css );
+        $proxy->filesystem->execute( 'put_contents', $this->css_dir, $shortcode_css );
     }
 }
