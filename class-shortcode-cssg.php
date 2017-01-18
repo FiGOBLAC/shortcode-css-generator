@@ -314,23 +314,14 @@ class Church_Core_Shortcode_CSSG {
         return false;
         endif;
 
-        foreach( $custom_css_properties as $property_name => $property_config ) {
-                    
-            // Get the option value selected by the user.
-            $user_option = $shortcode_defaults[ $property_name ]; 
-            
-            if( is_string( $property_config ) ) :
-            $custom_styles[] = $this->generate_css_from_custom_property( $user_option, $property_config );
-            endif;
-            
-            if( is_object( $property_config ) ) :
-            $custom_styles[] = $this->generate_css_from_custom_property_object( $user_option, $property_name, $property_config );
-            endif;
-            
-        }
+        // Get the css converted from the custom property configuration.
+        $custom_property_css = $this->convert_custom_configuration_to_css( $shortcode_defaults, $custom_css_properties );
+
+        // Get the css converted from the custom object configuration.
+        $custom_object_css  = $this->convert_custom_object_to_css( $shortcode_defaults, $custom_css_properties );
 
         // One round of styles comming up..
-        $custom_styles = implode ( $custom_styles );
+        $custom_styles = $custom_property_css . $custom_object_css;
         
         if( empty( $this->shortcode_styles ) ) : 
        
@@ -355,34 +346,45 @@ class Church_Core_Shortcode_CSSG {
      * @param  $defaults     The shortcode defaults.
      * @return               Shortcode css styles.
      */
-    private function generate_css_from_custom_property( $user_option, $configuration ) { 
+    private function convert_custom_configuration_to_css( $shortcode_defaults, $custom_css_properties ) {
         
-        // Sir, Maam... I need to see some id.
-        $shortcode_id = $this->shortcode_id;
+        foreach( $custom_css_properties as $property_name => $configuration ) {
 
-        // CSS Selector.
-        $selectors = strstr( $configuration, '__' , 'before' ); 
+            // Are you an string? If not go home.
+            if( ! is_string( $configuration ) ){
+                return;
+            }
 
-        // Add the shortcode's id to any format strings.
-        $selectors = sprintf( $selectors, $shortcode_id ); 
+            // Get the option value selected by the user.
+            $user_option = $shortcode_defaults[ $property_name ];
 
-        // Extract the css property.
-        $css_property =  strstr( $configuration , '__' , '' );
+            // Sir, Maam... I need to see some id.
+            $shortcode_id = $this->shortcode_id;
 
-        // Remove double underscores.
-        $css_property =  str_replace( '__', '' , $css_property );
+            // CSS Selector.
+            $selectors = strstr( $configuration, '__' , 'before' );
 
-        // Replace underscores with hyphens.
-        $css_property =  str_replace( '_', '-' , $css_property );
+            // Add the shortcode's id to any format strings.
+            $selectors = sprintf( $selectors, $shortcode_id );
 
-        // Extract the css value.
-        $css_value = $user_option;
+            // Extract the css property.
+            $css_property =  strstr( $configuration , '__' , '' );
 
-        // Store all selectors along with the css property and value.
-        $css  = $shortcode_id . ' ' .  $selectors . '{'. $css_property . ':' . $css_value .';' . '}';
+            // Remove double underscores.
+            $css_property =  str_replace( '__', '' , $css_property );
 
-        return $css;
+            // Replace underscores with hyphens.
+            $css_property =  str_replace( '_', '-' , $css_property );
 
+            // Extract the css value.
+            $css_value = $user_option;
+
+            // Store all selectors along with the css property and value.
+            $css[]  = $shortcode_id . ' ' .  $selectors . '{'. $css_property . ':' . $css_value .';' . '}';
+
+        }
+
+         return implode( $css );
     } 
     
     /**
@@ -396,62 +398,75 @@ class Church_Core_Shortcode_CSSG {
      * @param  $defaults     The shortcode defaults.
      * @return               Shortcode css styles.
      */
-    private function generate_css_from_custom_property_object( $user_option, $property_name, $property_config ) {
+    private function convert_custom_object_to_css( $shortcode_defaults, $custom_css_properties ) {
         
-        // name of the current shortcode.
-        $shortcode = $this->shortcode;      
+        foreach( $custom_css_properties as $property_name => $configuration ) {
+
+            // Are you an object? If not go home.
+            if( ! is_object( $configuration ) ){
+                return;
+            }
+
+            // Get the option value selected by the user.
+            $user_option = $shortcode_defaults[ $property_name ];
         
-        // name of the current shortcode
-        $shortcode_id = $this->shortcode_id;
-                
-        // Check if elements property exists and if this shortcode is assigned to elements.
-        $elements_set =  property_exists( $property_config, 'elements' ) && property_exists( $property_config->elements, $shortcode );
-        
-        // Get the target elements specific to the current shortcode if they exists.
-        $local_elements = $elements_set && ! empty ( $property_config->elements->$shortcode ) ? $property_config->elements->$shortcode : FALSE; 
-        
-        // Check if elements are Globally set.
-        $global_elements_set = property_exists( $property_config, 'elements' ) && property_exists( $property_config->elements, 'all' );
-                
-        // get the target elements used by all shortcodes if they exists.
-        $global_elements = $global_elements_set ? $property_config->elements->all : FALSE;
-        
-        // Check whether element are active
-        $has_elements = ( ! empty( $local_elements ) ) || ! ( empty( $global_elements ) );
-        
-        // Check if restrictions property exists and if this shortcode is assigned to restrictions.
-        $restrict_set =  property_exists( $property_config, 'restrictions' ) && property_exists( $property_config->restrictions, $shortcode );
-        
-        // Make sure restriction are properly formated as an array and check if restrictions exists for this shortcode.
-        $has_restrictions = $restrict_set && is_array( $property_config->restrictions->$shortcode ) && ( ! empty( $property_config->restrictions->$shortcode ) );
-        
-        // Check if current user option is allowed.
-        $is_restricted = ( $has_restrictions && ( ! in_array( $user_option, $property_config->restrictions->$shortcode ) ) );
-        
-        // Get the css declaration selected for the current shortcode.
-        $declaration = property_exists( $property_config->declarations, $user_option ) ? (array)$property_config->declarations->$user_option : FALSE;
-        
-        if( ( FALSE == $declaration ) || ( ! $has_elements ) ){
-            return;
+            // name of the current shortcode.
+            $shortcode = $this->shortcode;
+
+            // name of the current shortcode
+            $shortcode_id = $this->shortcode_id;
+
+            // Check if elements property exists and if this shortcode is assigned to elements.
+            $elements_set =  property_exists( $property_config, 'elements' ) && property_exists( $property_config->elements, $shortcode );
+
+            // Get the target elements specific to the current shortcode if they exists.
+            $local_elements = $elements_set && ! empty ( $property_config->elements->$shortcode ) ? $property_config->elements->$shortcode : FALSE;
+
+            // Check if elements are Globally set.
+            $global_elements_set = property_exists( $property_config, 'elements' ) && property_exists( $property_config->elements, 'all' );
+
+            // get the target elements used by all shortcodes if they exists.
+            $global_elements = $global_elements_set ? $property_config->elements->all : FALSE;
+
+            // Check whether element are active
+            $has_elements = ( ! empty( $local_elements ) ) || ! ( empty( $global_elements ) );
+
+            // Check if restrictions property exists and if this shortcode is assigned to restrictions.
+            $restrict_set =  property_exists( $property_config, 'restrictions' ) && property_exists( $property_config->restrictions, $shortcode );
+
+            // Make sure restriction are properly formated as an array and check if restrictions exists for this shortcode.
+            $has_restrictions = $restrict_set && is_array( $property_config->restrictions->$shortcode ) && ( ! empty( $property_config->restrictions->$shortcode ) );
+
+            // Check if current user option is allowed.
+            $is_restricted = ( $has_restrictions && ( ! in_array( $user_option, $property_config->restrictions->$shortcode ) ) );
+
+            // Get the css declaration selected for the current shortcode.
+            $declaration = property_exists( $property_config->declarations, $user_option ) ? (array)$property_config->declarations->$user_option : FALSE;
+
+            if( ( FALSE == $declaration ) || ( ! $has_elements ) ){
+                return;
+            }
+
+            // Convert search flags into values from shortcode defaults
+            array_walk( $declaration, array( $this, 'search_and_replace_flags') ) ;
+
+            foreach( $declaration as $css_property => $css_value ) {
+                $css_declaration[] = "$css_property:$css_value;";
+            }
+
+            // CSS for specific shortcodes.
+            $local_css      = ! empty( $local_elements ) ? $shortcode_id . ' '. $local_elements . '{' . implode( $css_declaration ) . '}' : FALSE;
+
+            // CSS used by all shortcodes.
+            $global_css     = ! empty( $global_elements ) ? $shortcode_id . ' '. $global_elements . '{' . implode( $css_declaration ) . '}' : FALSE;
+
+            // Combine css declatrations.
+            $css_declaration = ( ! $is_restricted ) ? $local_css . $global_css : FALSE;
+
+            $css[] = ! empty( $css_declaration ) ? sprintf( $css_declaration, $shortcode_id ) : FALSE;
         }
         
-        // Convert search flags into values from shortcode defaults
-        array_walk( $declaration, array( $this, 'search_and_replace_flags') ) ;
-        
-        foreach( $declaration as $css_property => $css_value ) {
-            $css_declaration[] = "$css_property:$css_value;";
-        }
-        
-        // CSS for specific shortcodes.
-        $local_css      = ! empty( $local_elements ) ? $shortcode_id . ' '. $local_elements . '{' . implode( $css_declaration ) . '}' : FALSE;
-        
-        // CSS used by all shortcodes.
-        $global_css     = ! empty( $global_elements ) ? $shortcode_id . ' '. $global_elements . '{' . implode( $css_declaration ) . '}' : FALSE;
-        
-        // Combine css declatrations.
-        $css_declaration = ( ! $is_restricted ) ? $local_css . $global_css : FALSE;
-        
-        return ! empty( $css_declaration ) ? sprintf( $css_declaration, $shortcode_id ) : FALSE;
+        return implode( $css );
     }
         
      /**
