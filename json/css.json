@@ -1,12 +1,11 @@
 {
 
-    "background": "",
+    "background": ".my-class",
     "background-color": "",
-    "background-opacity": "",
     "background-image": "",
 
     "background-size": "",
-    "background-repeat": "no_repeat",
+    "background-repeat": "",
     "background-attachment": "",
     "background-position": "",
 
@@ -48,7 +47,7 @@
 
     "font-style": "",
     "font-family": "",
-    "font-size": "",
+    "font-size": ".my-font-size",
     "line_height": "",
     "color": "",
     "text-align": "",

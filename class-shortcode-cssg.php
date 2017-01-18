@@ -92,7 +92,7 @@ class Church_Core_Shortcode_CSSG {
         $file_paths = json_decode( $file_path_configs, TRUE );
 
         // The location of the generated css.
-        $this->css_dir = $this->scssg_dir . $file_paths['css_file_path']; var_dump(  $this->css_dir );
+        $this->css_dir = $this->scssg_dir . $file_paths['css_file_path'];
 
 	}
 
@@ -203,12 +203,13 @@ class Church_Core_Shortcode_CSSG {
      * @param   array $shortcode     The name of the shortcode.
      * @param   array $defaults      The shortcode's defaults.
      */
-    private function create_shortcode_css() { 
+    private function generate_shortcode_css() {
 
         // Sir, Maam... I need to see some id.
         if( empty( $this->shortcode_defaults['id'] ) ) :
         return;
         endif;
+
         
         // Current shortcode.
         $shortcode = $this->shortcode;
@@ -231,7 +232,12 @@ class Church_Core_Shortcode_CSSG {
         // Create an id used to identify each shortcode's style setting.
         $shortcode_styles_id = $shortcode . '_' . $shortcode_defaults['id'];
 
+        $css_propoerties = array_intersect_key( $css_properties , $shortcode_css );
+
         if( ! empty( $shortcode_css ) ) {
+
+            // Property selectors.
+            $css_selectors = [];
 
             // Contstruct and store css property : value declarations.
             foreach( $shortcode_css as $css_property => $css_value ) : 
@@ -239,16 +245,25 @@ class Church_Core_Shortcode_CSSG {
             // Convert to proper css format.
             $css_property = str_replace( '_', '-', $css_property );
 
-            // Store all defined css styling for the shortcode.
-            $declarations[] =  $css_property . ':' . $css_value .';';
+            // Stitch together the propoerty selector.
+            $selector = !empty( $css_propoerties[ $css_property ] ) ? $css_selector . ' ' . $css_propoerties[ $css_property ] : $css_selector;
 
-            endforeach; 
+            if( array_key_exists ( $selector , $css_selectors ) ){
+                $css_selectors[ $selector ][] = $css_property . ':' . $css_value .';';
+            }
+
+            if( ! array_key_exists ( $selector , $css_selectors ) ){
+                $css_selectors[ $selector ] = array ( $css_property . ':' . $css_value .';');
+            }
+
+            endforeach;
             
-            // Create our string of declarations.
-            $declarations = implode( $declarations );
+            array_walk( $css_selectors , function ( &$declaration , $selector  ) {
+                $declaration =  $selector . '{'. implode( $declaration ). '}';
+            });
 
-            // Construct the complete css selector and declaration block.
-            $shortcode_css = $css_selector . '{'. $declarations . '}';  
+            // Create our string of declarations.
+            $shortcode_css = implode( $css_selectors );
             
             // Store the css styles that was set for the shortcode.                      
             $this->styles[ $shortcode_styles_id ] = $shortcode_css;
@@ -280,7 +295,7 @@ class Church_Core_Shortcode_CSSG {
      * @param  $defaults     The shortcode defaults.
      * @return               Shortcode css styles.
      */
-    private function create_shortcode_css_from_custom() {
+    private function generate_css_from_custom() {
         
         // Defaults
         $shortcode_defaults = $this->shortcode_defaults;
@@ -424,9 +439,7 @@ class Church_Core_Shortcode_CSSG {
         array_walk( $declaration, array( $this, 'search_and_replace_flags') ) ;
         
         foreach( $declaration as $css_property => $css_value ) {
-                
             $css_declaration[] = "$css_property:$css_value;";
-                
         }
         
         // CSS for specific shortcodes.
@@ -453,10 +466,10 @@ class Church_Core_Shortcode_CSSG {
         $this->setup_shortcode_vars( $shortcode, $defaults );
         
         // Get styles generated for the current shortcode.
-        $this->create_shortcode_css();
+        $this->generate_shortcode_css();
         
         // Get css styles generated from custom properties.
-        $this->create_shortcode_css_from_custom();        
+        $this->generate_css_from_custom();
         
         // Get all styles generated for the shortcode.
         $styles = $this->shortcode_styles;
