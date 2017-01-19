@@ -1,3 +1,7 @@
+##Features
+- Use valid css properties or your own custom property names
+- Creat your own css custom objects
+
 #shortcode CSS Generator
 
 == Description ==
