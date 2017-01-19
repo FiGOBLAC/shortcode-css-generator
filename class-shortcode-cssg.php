@@ -22,14 +22,14 @@
  */
 class Church_Core_Shortcode_CSSG {
 
-
     /**
      * The shortcodes styles set for each shortcode.
      * 
      * @since    1.0.0
      * @access   public
      */
-    protected $styles;
+    protected $shortcode_defaults;
+
 
     /**
      * The shortcodes styles set for each shortcode.
@@ -39,6 +39,14 @@ class Church_Core_Shortcode_CSSG {
      */
     protected $shortcode_styles;
 
+
+    /**
+     * The shortcodes styles set for each shortcode.
+     *
+     * @since    1.0.0
+     * @access   public
+     */
+    protected $styles;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -144,17 +152,18 @@ class Church_Core_Shortcode_CSSG {
      * @param   array $shortcode     The name of the shortcode.
      * @param   array $defaults      The shortcode's defaults.
      */
-    private function search_and_replace_flags( &$css_value, $css_property ) {
+    private function search_and_replace_flags( &$css_value) {
         
         // Extract out the flag from the option's output value.
         $flag = $this->extract_search_flag( $css_value ); 
         
         // Extract the property name from the flag.
-        $property_name = str_replace( array( '{','}' ), '', $flag );  var_dump($this->shortcode_defaults );
+        $property_name = str_replace( array( '{','}' ), '', $flag );
         
          // Replace the flag with value shortcode value from the user. // Todo: Add custom error message.
         if( false !== $flag && key_exists( $property_name, $this->shortcode_defaults ) ) {
-            $css_value = str_replace( $flag, $this->shortcode_defaults[ $property_name ], $css_value );var_dump( $css_value );
+            $css_value = str_replace( $flag, $this->shortcode_defaults[ $property_name ], $css_value );
+            return $css_value ;
         } 
     }
 
@@ -174,7 +183,7 @@ class Church_Core_Shortcode_CSSG {
         $shortcode = $this->shortcode;
         
         // Shortcode css selector.
-        $shortcode_id = '#' . $shortcode_defaults['id'];
+        $shortcode_id = $this->shortcode_id;
 
         // List of property => selector pairs.
         $registered_properties = array_intersect_key( $registered_properties , $shortcode_css );
@@ -190,10 +199,13 @@ class Church_Core_Shortcode_CSSG {
                 continue;
             }
 
-            // Stitch together the propoerty selector.
-            $selector = !empty( $registered_properties[ $css_property ] ) ? $shortcode_id . ' ' . $registered_properties[ $css_property ] : $shortcode_id;
+            // CSS selectors registered with each registered property.
+            $registered_selectors = $registered_properties[ $css_property ];
 
-            if(  strpos( $selector , '__' ) ){
+            // Stitch together the propoerty selector.
+            $selector = ! empty( $registered_selectors ) ? $shortcode_id . ' ' . $registered_selectors : $shortcode_id;
+
+            if( strpos( $selector , '__' ) ){
 
                 $css_selector =  strstr( $selector, '__' , true );
 
@@ -222,7 +234,6 @@ class Church_Core_Shortcode_CSSG {
         $shortcode_css = implode( $css_selectors );
 
         return $shortcode_css ;
-
     }
 
     /**
@@ -265,8 +276,9 @@ class Church_Core_Shortcode_CSSG {
         $custom_property_css = $this->convert_properties_to_css( $shortcode_defaults, $registered_properties, $shortcode_css );
         
         // Generata the css from custom object configurations.
-        $custom_object_css = $this->convert_custom_object_to_css( $registered_properties, $shortcode_css ); var_dump( $custom_object_css );
+        $custom_object_css = $this->convert_custom_object_to_css( $registered_properties, $shortcode_css );
 
+        // Conbine into one string of css
         $shortcode_css = $custom_property_css . $custom_object_css;
 
         // Store the css styles that was set for the shortcode.
@@ -328,7 +340,7 @@ class Church_Core_Shortcode_CSSG {
 
            // Check if elements are Globally set.
            $global_elements_set = property_exists( $configuration, 'elements' ) && property_exists( $configuration->elements, 'all' );
-//
+
             // get the target elements used by all shortcodes if they exists.
            $global_elements = $global_elements_set ? $configuration->elements->all : FALSE;
 
@@ -347,30 +359,43 @@ class Church_Core_Shortcode_CSSG {
            // Get the css declaration selected for the current shortcode.
            $declaration = property_exists( $configuration->declarations, $user_option ) ? (array)$configuration->declarations->$user_option : FALSE;
 
-           if( ( FALSE == $declaration ) || ( ! $has_elements ) ){
-               return;
-           } var_dump( $declaration );
-
-           // Convert search flags into values from shortcode defaults
-           array_walk( $declaration, array( $this, 'search_and_replace_flags') ) ;
-
-           foreach( $declaration as $css_property => $css_value ) {
-               $css_declaration[] = "$css_property:$css_value;";
+           if( ( false == $declaration ) || ( ! $has_elements ) ){ var_dump( 'no elements');
+               continue;
            }
 
-           // CSS for specific shortcodes.
-           $local_css      = ! empty( $local_elements ) ? $shortcode_id . ' '. $local_elements . '{' . implode( $css_declaration ) . '}' : FALSE;
+           // Get any flags that were placed in the user selelcted declaration.
+           $flag =  $this->extract_search_flag( implode( $declaration) );
 
-           // CSS used by all shortcodes.
-           $global_css     = ! empty( $global_elements ) ? $shortcode_id . ' '. $global_elements . '{' . implode( $css_declaration ) . '}' : FALSE;
+           // Strip the braces to get the flag to get the name of our secondary_option.
+           $secondary_option = ( false !== $flag ) ? str_replace( array( '{','}' ), '', $flag ) : false;
 
-           // Combine css declatrations.
-           $css_declaration = ( ! $is_restricted ) ? $local_css . $global_css : FALSE;
+           // Check to see if the seciondary option is being used in the shortcode defaults.
+           $secondary_option_active = ( false !== $secondary_option ) && array_key_exists( $secondary_option , $this->shortcode_defaults );
 
-           $css[] = ! empty( $css_declaration ) ? sprintf( $css_declaration, $shortcode_id ) : FALSE;
+           // Move on if the secondary option isn't beint used.
+           if( ! $secondary_option_active ) { var_dump( 'no property active' );
+               continue;
+           }
+
+           // Convert search flags into values from shortcode defaults
+           array_walk( $declaration, array( $this, 'search_and_replace_flags') ); //var_dump( $declaration );
+
+           array_walk( $declaration, function( &$css_value ,$css_property ){
+               $css_value = "$css_property:$css_value;";
+           } );
+
+           // Combine declatrations if there are no restrictions and this shortcode isn't already assigned.
+           $elements = $elements_set ? $shortcode_id . $local_elements : $shortcode_id . $global_elements;
+
+           // Replace all flags with the shortcode's id.
+           $elements = sprintf( $elements, $shortcode_id );
+
+           // Combine declatrations if there are no restrictions for this shortcode.
+           $css[] = ! $is_restricted ? $elements  . '{' . implode( $declaration ) . '}' : false;
+
        }
 
-        return implode( $css );
+        return implode ($css);
     }
         
      /**

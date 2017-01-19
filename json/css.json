@@ -55,8 +55,8 @@
     "css-object1": {
 
         "elements": {
-            "all": ".all-elemetns %1$s.sample",
-            "sample_shortcode": ", .titleblock > %1$s .test",
+            "all": ".all %1$s.sample",
+            "sample_shortcode": " .sample > %1$s .test",
             "dropcap_shortcode": ""
         },
 
@@ -72,6 +72,48 @@
                 "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), {css-object1-color}, rgba(0, 0, 0, 0))",
                 "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), {css-object1-color}, rgba(0, 0, 0, 0))",
                 "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), {css-object1-color}, rgba(0, 0, 0, 0))",
+                "border-image-slice": 1
+            },
+            "left": {
+                "border": "1px solid transparent",
+                "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0))",
+                "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0))",
+                "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0))",
+                "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0))",
+                "border-image-slice": 1
+            },
+            "right": {
+                "border": "1px solid transparent",
+                "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0))",
+                "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0))",
+                "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0))",
+                "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0))",
+                "border-image-slice": 1
+            }
+
+        }
+    },
+
+    "css-object2": {
+
+        "elements": {
+            "all": ".all-elements %1$s.sample",
+            "sample_shortcode": ".titleblock > %1$s .test",
+            "dropcap_shortcode": ""
+        },
+
+        "restrictions": {
+            "sample_shortcode": ["center", "right"]
+        },
+
+        "declarations": {
+
+            "center": {
+                "border": "1px solid transparent",
+                "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), {css-object2-color}, rgba(0, 0, 0, 0))",
+                "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), {css-object2-color}, rgba(0, 0, 0, 0))",
+                "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), {css-object2-color}, rgba(0, 0, 0, 0))",
+                "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), {css-object2-color}, rgba(0, 0, 0, 0))",
                 "border-image-slice": 1
             },
             "left": {
