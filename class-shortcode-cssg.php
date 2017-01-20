@@ -1,35 +1,24 @@
 <?php
 
 /**
- * The public-facing functionality of the plugin.
+ * The shortcode generator class.
  *
- * @link       http://www.figoblac.com
- * @since      1.0.0
+ * Defines and generates the css for shortcode
+ * attributes.
  *
- * @package    Shortcode_CG
- * @subpackage Shortcode_CG/public
- */
-
-/**
- * The public-facing functionality of the plugin.
+ * @package    Shortcode_CSSG
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
- * @package    Shortcode_CG
- * @subpackage Shortcode_CG/public
- * @author     FiGO BLAC <figo@figoblac.com>
+ * @author     FiGO BLAC <figoblacmedia@yahoo.com>
  */
 class Church_Core_Shortcode_CSSG {
 
-    /**
+	/**
      * Stores the shortcode defaults.
      *
      * @since    1.0.0
      * @access   public
      */
     protected $shortcode_defaults;
-
 
     /**
      * Stores each shortcode id with shortcode's generated css.
@@ -39,7 +28,6 @@ class Church_Core_Shortcode_CSSG {
      */
     protected $shortcode_styles;
 
-
     /**
      * Stores the combined css for all shorcodes.
      *
@@ -48,18 +36,19 @@ class Church_Core_Shortcode_CSSG {
      */
     protected $styles;
 
-	/**
-	 * Initialize the class and set its properties.
-   *
-   * Intiates the container for the css styles.
-   *
-   * Initializes the file paths.
-   *
-   * Sets up the registered css properties.
-	 *
-	 * @since    1.0.0
-   *
-	 */
+    /**
+     * Initialize the class and set its properties.
+     *
+     * Intiates the container for the css styles.
+     *
+     * Initializes the file paths.
+     *
+     * Sets up the registered css properties.
+     *
+     * @since    1.0.0
+     * @access   public
+     *
+     */
 	public function __construct() {
 
         $this->styles = array();
@@ -104,12 +93,12 @@ class Church_Core_Shortcode_CSSG {
 
 	/**
 	 * Set up variables needed by the methods in the application.
-	 *
-	 * @since    1.0.0
-   *
-   * @param   string $shorcode   The name of the shortcode
-   * @param   string $string    The shortcode's attributes.
-	 */
+     *
+     * @since    1.0.0
+     *
+     * @param   string $shorcode   The name of the shortcode
+     * @param   string $string    The shortcode's attributes.
+     */
 	private function setup_shortcode_vars( $shortcode, $defaults ) {
 
         // Store shortcode name
@@ -124,17 +113,17 @@ class Church_Core_Shortcode_CSSG {
 	}
 
    /**
-   * Strips  and extracts the flag placed within a given string.
-   *
-   * Removes the curely braces used to wrap a value and returns the
-   * clean version of that value.
-   *
-   * @since    1.0.0
-   * @access   private
-   *
-   * @param   string $string    A string that contains the flag.
-   * @return  string            Name of the extracted flag.
-   */
+    * Strips  and extracts the flag placed within a given string.
+    *
+    * Removes the curely braces used to wrap a value and returns the
+    * clean version of that value.
+    *
+    * @since    1.0.0
+    * @access   private
+    *
+    * @param   string $string    A string that contains the flag.
+    * @return  string            Name of the extracted flag.
+    */
     private function extract_search_flag( $string ) {
 
         if( ! strpos( $string, '{') ) {
@@ -150,9 +139,9 @@ class Church_Core_Shortcode_CSSG {
         $flag = substr( $string, $startIndex, $length );
 
         return $flag;
-    }
+	}
 
-     /**
+    /**
      * Call back that Searches for and replaces flags with the resulting
      * value of a shorcode's attribute.
      *
@@ -181,7 +170,7 @@ class Church_Core_Shortcode_CSSG {
         }
     }
 
-     /**
+    /**
      * Convert shortcode style settings into css properties.
      *
      * Uses the configurations from registered properties to generate a
@@ -195,7 +184,7 @@ class Church_Core_Shortcode_CSSG {
      * @param   array $shortcode_css             Shortcode css => value pairs
      * @return  string                           Valid css declarations.
      */
-    private function convert_properties_to_css( $shortcode_defaults, $registered_properties, $shortcode_css ) {
+    private function convert_properties_to_css( $registered_properties, $shortcode_css ) {
 
         // Current shortcode.
         $shortcode = $this->shortcode;
@@ -204,7 +193,7 @@ class Church_Core_Shortcode_CSSG {
         $shortcode_id = $this->shortcode_id;
 
         // Array of property => selector pairs.
-        $registered_properties = array_intersect_key( $registered_properties , $shortcode_css );
+        $registered_properties = array_intersect_key( $registered_properties, $shortcode_css );
 
         // Property selectors.
         $css_selectors = [];
@@ -291,7 +280,7 @@ class Church_Core_Shortcode_CSSG {
         }
 
         // Generata the css from custom property configurations.
-        $custom_property_css = $this->convert_properties_to_css( $shortcode_defaults, $registered_properties, $shortcode_css );
+        $custom_property_css = $this->convert_properties_to_css( $registered_properties, $shortcode_css );
 
         // Generata the css from custom object configurations.
         $custom_object_css = $this->convert_custom_object_to_css( $registered_properties, $shortcode_css );
@@ -316,7 +305,6 @@ class Church_Core_Shortcode_CSSG {
 
         }
     }
-
 
     /**
      * Converts css from configuration settings of custom css objects.
@@ -421,12 +409,12 @@ class Church_Core_Shortcode_CSSG {
         return implode( $css );
     }
 
-     /**
-      * Generates a style sheet and writes the compiled css.
-      *
-      * @since  1.0.0
-      * @acces  public
-      */
+    /**
+     * Generates a style sheet and writes the compiled css.
+     *
+     * @since  1.0.0
+     * @acces  public
+     */
     public function shortcode_cssg( $shortcode, $defaults ) {
 
         // Setup shared variables.
@@ -445,7 +433,7 @@ class Church_Core_Shortcode_CSSG {
         $proxy = ReduxFrameworkInstances::get_instance( 'TC_Options' );
 
         // Almost there... Just need to apply some filters.
-        $styles = apply_filters( 'filter_generated_shortcode_css', $styles );
+        $styles = apply_filters( 'filter_shortcode_css', $styles );
 
         // Officially assign the content.
         $shortcode_css = array( 'content' => $styles );
