@@ -10,7 +10,7 @@
  *
  * @author     FiGO BLAC <figoblacmedia@yahoo.com>
  */
-class Church_Core_Shortcode_CSSG {
+class Shortcode_CSSG {
 
 	/**
      * Stores the shortcode defaults.
