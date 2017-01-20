@@ -23,8 +23,8 @@
 class Church_Core_Shortcode_CSSG {
 
     /**
-     * The shortcodes styles set for each shortcode.
-     * 
+     * Stores the shortcode defaults.
+     *
      * @since    1.0.0
      * @access   public
      */
@@ -32,8 +32,8 @@ class Church_Core_Shortcode_CSSG {
 
 
     /**
-     * The shortcodes styles set for each shortcode.
-     * 
+     * Stores each shortcode id with shortcode's generated css.
+     *
      * @since    1.0.0
      * @access   public
      */
@@ -41,7 +41,7 @@ class Church_Core_Shortcode_CSSG {
 
 
     /**
-     * The shortcodes styles set for each shortcode.
+     * Stores the combined css for all shorcodes.
      *
      * @since    1.0.0
      * @access   public
@@ -50,22 +50,26 @@ class Church_Core_Shortcode_CSSG {
 
 	/**
 	 * Initialize the class and set its properties.
+   *
+   * Intiates the container for the css styles.
+   *
+   * Initializes the file paths.
+   *
+   * Sets up the registered css properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of the plugin.
-	 * @param      string    $version    The version of this plugin.
+   *
 	 */
 	public function __construct() {
-        
-        $this->shortcode_styles = array();
 
+        $this->styles = array();
         $this->set_file_paths();
         $this->get_registered_properties();
 
 	}
 
 	/**
-	 * Register the stylesheets for the public-facing side of the site.
+	 * Setup the properties used for file paths.
 	 *
 	 * @since    1.0.0
 	 */
@@ -74,10 +78,10 @@ class Church_Core_Shortcode_CSSG {
         // The parent directory.
         $this->scssg_dir =  dirname( __FILE__ , 2 ). '/cssg';
 
-        // Configurations for file paths.
+        // Configurations for custom file paths.
         $file_path_configs = file_get_contents(  $this->scssg_dir . '/json/configs.json' );
 
-        // File path configs converted to array.
+        // Custom File path configs converted to array.
         $file_paths = json_decode( $file_path_configs, TRUE );
 
         // The location of the generated css.
@@ -86,7 +90,7 @@ class Church_Core_Shortcode_CSSG {
 	}
 
 	/**
-	 * Register the stylesheets for the public-facing side of the site.
+	 * Get and store the registered css properties.
 	 *
 	 * @since    1.0.0
 	 */
@@ -97,17 +101,20 @@ class Church_Core_Shortcode_CSSG {
         $this->registered_properties = (array) json_decode( $registered_properties );
 
 	}
-    
+
 	/**
-	 * Register the stylesheets for the public-facing side of the site.
+	 * Set up variables needed by the methods in the application.
 	 *
 	 * @since    1.0.0
+   *
+   * @param   string $shorcode   The name of the shortcode
+   * @param   string $string    The shortcode's attributes.
 	 */
 	private function setup_shortcode_vars( $shortcode, $defaults ) {
-          
+
         // Store shortcode name
         $this->shortcode = $shortcode;
-        
+
         // Shortcode defaults.
         $this->shortcode_defaults = $defaults;
 
@@ -115,77 +122,88 @@ class Church_Core_Shortcode_CSSG {
         $this->shortcode_id = '#' . $this->shortcode_defaults['id'];
 
 	}
-     /**
-     * Convert shortcode style settings into css properties.
-     * 
-     * 
-     * @since    1.0.0
-     * @access   private
-     * 
-     * @param   array $shortcode     The name of the shortcode.
-     * @param   array $defaults      The shortcode's defaults.
-     */
+
+   /**
+   * Strips  and extracts the flag placed within a given string.
+   *
+   * Removes the curely braces used to wrap a value and returns the
+   * clean version of that value.
+   *
+   * @since    1.0.0
+   * @access   private
+   *
+   * @param   string $string    A string that contains the flag.
+   * @return  string            Name of the extracted flag.
+   */
     private function extract_search_flag( $string ) {
-        
+
         if( ! strpos( $string, '{') ) {
             return false;
         }
-        
+
         $pos1 = strpos( $string , '{');
         $pos2 = strpos( $string , '}');
-        
+
         $startIndex = min( $pos1, $pos2 );
         $length = abs( $pos1 - $pos2 ) + 1;
 
         $flag = substr( $string, $startIndex, $length );
-        
+
         return $flag;
-    }   
-    
+    }
+
      /**
-     * Convert shortcode style settings into css properties.
-     * 
-     * 
+     * Call back that Searches for and replaces flags with the resulting
+     * value of a shorcode's attribute.
+     *
+     * This function is a callback used to extract the name of a shortcode
+     * that was used as a flog and  replaces attribute/option the flag
+     * with the value of that attribute / option.
+     *
      * @since    1.0.0
      * @access   private
-     * 
-     * @param   array $shortcode     The name of the shortcode.
-     * @param   array $defaults      The shortcode's defaults.
+     *
+     * @param   string $css_value      The css string as the array value
+     * @param   string $css_property   The css property name as the array key
+     *
      */
-    private function search_and_replace_flags( &$css_value) {
-        
+    private function search_and_replace_flags( &$css_value, $css_property ) {
+
         // Extract out the flag from the option's output value.
-        $flag = $this->extract_search_flag( $css_value ); 
-        
+        $flag = $this->extract_search_flag( $css_value );
+
         // Extract the property name from the flag.
         $property_name = str_replace( array( '{','}' ), '', $flag );
-        
+
          // Replace the flag with value shortcode value from the user. // Todo: Add custom error message.
         if( false !== $flag && key_exists( $property_name, $this->shortcode_defaults ) ) {
             $css_value = str_replace( $flag, $this->shortcode_defaults[ $property_name ], $css_value );
-            return $css_value ;
-        } 
+        }
     }
 
      /**
      * Convert shortcode style settings into css properties.
-     * 
-     * 
+     *
+     * Uses the configurations from registered properties to generate a
+     * a string of valid css for each shortcode attribute / aption
+     *
      * @since    1.0.0
      * @access   private
-     * 
-     * @param   array $shortcode     The name of the shortcode.
-     * @param   array $defaults      The shortcode's defaults.
+     *
+     * @param   array $shortcode_defaults        An array of shortcode attributes
+     * @param   array $registered_properties     User registered css properties
+     * @param   array $shortcode_css             Shortcode css => value pairs
+     * @return  string                           Valid css declarations.
      */
     private function convert_properties_to_css( $shortcode_defaults, $registered_properties, $shortcode_css ) {
 
         // Current shortcode.
         $shortcode = $this->shortcode;
-        
+
         // Shortcode css selector.
         $shortcode_id = $this->shortcode_id;
 
-        // List of property => selector pairs.
+        // Array of property => selector pairs.
         $registered_properties = array_intersect_key( $registered_properties , $shortcode_css );
 
         // Property selectors.
@@ -207,6 +225,7 @@ class Church_Core_Shortcode_CSSG {
 
             if( strpos( $selector , '__' ) ){
 
+                // Extract the element selector.
                 $css_selector =  strstr( $selector, '__' , true );
 
                 // Get the property assigned to the selector.
@@ -218,7 +237,7 @@ class Church_Core_Shortcode_CSSG {
                 $selector = $css_selector;
             }
 
-            if( array_key_exists ( $selector , $css_selectors ) ){
+            if( array_key_exists( $selector , $css_selectors ) ){
                 $css_selectors[ $selector ][] = $css_property . ':' . $css_value .';';
             }
 
@@ -237,14 +256,13 @@ class Church_Core_Shortcode_CSSG {
     }
 
     /**
-     * Convert shortcode style settings into css properties.
+     * Generates and stores the final css output for all the attributes
+     * for both custom css propoerties and objects for the current
+     * shortcode.
      *
-     * 
      * @since    1.0.0
      * @access   private
-     * 
-     * @param   array $shortcode     The name of the shortcode.
-     * @param   array $defaults      The shortcode's defaults.
+     *
      */
     private function generate_shortcode_css() {
 
@@ -259,60 +277,63 @@ class Church_Core_Shortcode_CSSG {
         // Registered css properties.
         $registered_properties = $this->registered_properties;
 
-        // Create an id used to identify each shortcode's style setting.
+        // Create an id used to identify each shortcode's set of styles.
         $shortcode_styles_id =  $this->shortcode . '_' . $shortcode_defaults['id'];
-        
+
         // Extract all the css properties and values that matches registered properties.
         $shortcode_css  = array_intersect_key( $shortcode_defaults, $registered_properties );
 
         // Remove css properties with no values.
         $shortcode_css  = array_filter( $shortcode_css );
-        
+
         if( empty( $shortcode_css ) ) {
             return;
         }
-        
+
         // Generata the css from custom property configurations.
         $custom_property_css = $this->convert_properties_to_css( $shortcode_defaults, $registered_properties, $shortcode_css );
-        
+
         // Generata the css from custom object configurations.
         $custom_object_css = $this->convert_custom_object_to_css( $registered_properties, $shortcode_css );
 
-        // Conbine into one string of css
+        // Combine into one string of css from both custom property and object.
         $shortcode_css = $custom_property_css . $custom_object_css;
 
         // Store the css styles that was set for the shortcode.
-        $this->styles[ $shortcode_styles_id ] = $shortcode_css;
+        $this->shortcode_styles[ $shortcode_styles_id ] = $shortcode_css;
 
-        if( array_key_exists( $shortcode_styles_id, $this->styles ) ) {
+        if( array_key_exists( $shortcode_styles_id, $this->shortcode_styles ) ) {
 
-            if( empty( $this->shortcode_styles ) ) :
+            if( empty( $this->styles ) ) :
 
-            $this->shortcode_styles = $this->styles[ $shortcode_styles_id ];
+            $this->styles = $this->shortcode_styles[ $shortcode_styles_id ];
 
             else:
 
-            $this->shortcode_styles =  $this->shortcode_styles . $this->styles[ $shortcode_styles_id ] ;
+            $this->styles =  $this->styles . $this->shortcode_styles[ $shortcode_styles_id ] ;
 
             endif;
 
         }
     }
 
-    
+
     /**
-     * Converts custom style configurations into
-     * proper css declarations.
-     * 
+     * Converts css from configuration settings of custom css objects.
+     *
+     * Uses the configruation settings from registered css property objects
+     * and generates valid css declarations for all the attributes of The
+     * current shortcode.
+     *
      * @since    1.0.0
      * @access   private
-     * 
-     * @param  $shortcode    The name of the shortcode.
-     * @param  $defaults     The shortcode defaults.
-     * @return               Shortcode css styles.
+     *
+     * @param   array $shortcode_defaults   An array of shortcode attributes
+     * @param   array $shortcode_css        Shortcode css => value pairs
+     * @return  Valid css declarations.
      */
     private function convert_custom_object_to_css(  $registered_properties, $shortcode_css ) {
-        
+
        foreach( $shortcode_css as $css_property => $css_value ) {
 
            // Get the objects css configuration settings.
@@ -326,10 +347,10 @@ class Church_Core_Shortcode_CSSG {
            // Get the option value selected by the user.
            $user_option = $css_value;
 
-           // name of the current shortcode.
+           // Name of the current shortcode.
            $shortcode = $this->shortcode;
 
-           // name of the current shortcode
+           // The shorcode's id.
            $shortcode_id = $this->shortcode_id;
 
            // Check if elements property exists and if this shortcode is assigned to elements.
@@ -341,13 +362,13 @@ class Church_Core_Shortcode_CSSG {
            // Check if elements are Globally set.
            $global_elements_set = property_exists( $configuration, 'elements' ) && property_exists( $configuration->elements, 'all' );
 
-            // get the target elements used by all shortcodes if they exists.
+            // Get the target elements used by all shortcodes if they exists.
            $global_elements = $global_elements_set ? $configuration->elements->all : FALSE;
 
-           // Check whether element are active
+           // Check if element assignments are active.
            $has_elements = ( ! empty( $local_elements ) ) || ! ( empty( $global_elements ) );
 
-           // Check if restrictions property exists and if this shortcode is assigned to restrictions.
+           // Check if the restrictions property exists and if this shortcode is assigned to restrictions.
            $restrict_set =  property_exists( $configuration, 'restrictions' ) && property_exists( $configuration->restrictions, $shortcode );
 
            // Make sure restriction are properly formated as an array and check if restrictions exists for this shortcode.
@@ -359,74 +380,76 @@ class Church_Core_Shortcode_CSSG {
            // Get the css declaration selected for the current shortcode.
            $declaration = property_exists( $configuration->declarations, $user_option ) ? (array)$configuration->declarations->$user_option : FALSE;
 
-           if( ( false == $declaration ) || ( ! $has_elements ) ){ var_dump( 'no elements');
+           // Skip if there are no declarations or elements assigned.
+           if( ( false == $declaration ) || ( ! $has_elements ) ){
                continue;
            }
 
            // Get any flags that were placed in the user selelcted declaration.
            $flag =  $this->extract_search_flag( implode( $declaration) );
 
-           // Strip the braces to get the flag to get the name of our secondary_option.
+           // Strip the braces from the given flag to get the name of our secondary_option.
            $secondary_option = ( false !== $flag ) ? str_replace( array( '{','}' ), '', $flag ) : false;
 
            // Check to see if the seciondary option is being used in the shortcode defaults.
            $secondary_option_active = ( false !== $secondary_option ) && array_key_exists( $secondary_option , $this->shortcode_defaults );
 
-           // Move on if the secondary option isn't beint used.
+           // Move on if the secondary option isn't being used.
            if( ! $secondary_option_active ) { var_dump( 'no property active' );
                continue;
            }
 
-           // Convert search flags into values from shortcode defaults
-           array_walk( $declaration, array( $this, 'search_and_replace_flags') ); //var_dump( $declaration );
+           // Convert search flags into values from shortcode defaults.
+           array_walk( $declaration, array( $this, 'search_and_replace_flags') );
 
+           // Finally creaate an array  valid css delcarations.
            array_walk( $declaration, function( &$css_value ,$css_property ){
                $css_value = "$css_property:$css_value;";
            } );
 
-           // Combine declatrations if there are no restrictions and this shortcode isn't already assigned.
+           // Combine element selectors with their respective declatrations to complete a full css string.
            $elements = $elements_set ? $shortcode_id . $local_elements : $shortcode_id . $global_elements;
 
            // Replace all flags with the shortcode's id.
            $elements = sprintf( $elements, $shortcode_id );
 
-           // Combine declatrations if there are no restrictions for this shortcode.
+           // store the css if there are no restrictions for this shortcode.
            $css[] = ! $is_restricted ? $elements  . '{' . implode( $declaration ) . '}' : false;
 
        }
 
-        return implode ($css);
+        return implode( $css );
     }
-        
+
      /**
-      * Generates the css for all shortcodes.
-      *                         
+      * Generates a style sheet and writes the compiled css.
+      *
       * @since  1.0.0
       * @acces  public
-      */   
-    public function shortcode_cssg( $shortcode, $defaults ) { 
-        
-        // Shared variables
+      */
+    public function shortcode_cssg( $shortcode, $defaults ) {
+
+        // Setup shared variables.
         $this->setup_shortcode_vars( $shortcode, $defaults );
-        
-        // Get styles generated for the current shortcode.
+
+        // Generate the all styles for the current shortcode.
         $this->generate_shortcode_css();
 
         // Get all styles generated for the shortcode.
-        $styles = $this->shortcode_styles;
-                
+        $styles = $this->styles;
+
         // One rediculously long string of css declarations coming up...
-        $styles = ! empty( $styles ) ? $styles : false; 
-        
+        $styles = ! empty( $styles ) ? $styles : false;
+
         // Get the theme options class instance using RF's beautiful proxy function.
         $proxy = ReduxFrameworkInstances::get_instance( 'TC_Options' );
 
         // Almost there... Just need to apply some filters.
-        $styles = apply_filters( 'filter_generated_shortcode_css', $styles );        
-        
-        // Officially assign the content. 
+        $styles = apply_filters( 'filter_generated_shortcode_css', $styles );
+
+        // Officially assign the content.
         $shortcode_css = array( 'content' => $styles );
-        
+
         // And Voila.. Add the contents to the css file.
         $proxy->filesystem->execute( 'put_contents', $this->css_dir, $shortcode_css );
     }
