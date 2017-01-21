@@ -37,6 +37,14 @@ class Shortcode_CSSG {
     protected $styles;
 
     /**
+     * Stores the combined css for all shorcodes.
+     *
+     * @since    1.0.0
+     * @access   public
+     */
+    protected $scssg_dir;
+
+    /**
      * Initialize the class and set its properties.
      *
      * Intiates the container for the css styles.
@@ -88,8 +96,11 @@ class Shortcode_CSSG {
 	 */
 	private function set_file_paths() {
 
-        // The parent directory.
-        $this->scssg_dir =  dirname( __FILE__ , 2 ). '/cssg';
+        // Parent directory outside the shortcode css generator.
+        $this->parent_dir =  dirname( __FILE__ , 2 );
+
+        // The parent directory of this file.
+        $this->scssg_dir =  dirname( __FILE__ , 1 );
 
         // Configurations for custom file paths.
         $file_path_configs = file_get_contents(  $this->scssg_dir . '/json/configs.json' );
@@ -97,8 +108,8 @@ class Shortcode_CSSG {
         // Custom File path configs converted to array.
         $file_paths = json_decode( $file_path_configs, TRUE );
 
-        // The location of the generated css.
-        $this->css_dir = $this->scssg_dir . $file_paths['css_file_path'];
+        // The desired location of the generated css.
+        $this->css_dir = $this->parent_dir . $file_paths['css_file_path'];
 
 	}
 
