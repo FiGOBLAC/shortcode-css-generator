@@ -49,13 +49,37 @@ class Shortcode_CSSG {
      * @access   public
      *
      */
-	public function __construct() {
+	public static function get_instance() {
 
-        $this->styles = array();
-        $this->set_file_paths();
-        $this->get_registered_properties();
+        static $instance = null;
+
+        if( is_null( $instance ) ) {
+
+            $instance = new self;
+
+            $instance->styles = array();
+            $instance->set_file_paths();
+            $instance->get_registered_properties();
+        }
+
+        return $instance;
 
 	}
+
+    /**
+     * Initialize the class and set its properties.
+     *
+     * Intiates the container for the css styles.
+     *
+     * Initializes the file paths.
+     *
+     * Sets up the registered css properties.
+     *
+     * @since    1.0.0
+     * @access   public
+     *
+     */
+	public function __construct() {}
 
 	/**
 	 * Setup the properties used for file paths.
@@ -382,13 +406,10 @@ class Shortcode_CSSG {
            // Check to see if the seciondary option is being used in the shortcode defaults.
            $secondary_option_active = ( false !== $secondary_option ) && array_key_exists( $secondary_option , $this->shortcode_defaults );
 
-           // Move on if the secondary option isn't being used.
-           if( ! $secondary_option_active ) { var_dump( 'no property active' );
-               continue;
-           }
-
            // Convert search flags into values from shortcode defaults.
-           array_walk( $declaration, array( $this, 'search_and_replace_flags') );
+           if( $secondary_option_active ) {
+                array_walk( $declaration, array( $this, 'search_and_replace_flags') );
+            }
 
            // Finally creaate an array  valid css delcarations.
            array_walk( $declaration, function( &$css_value ,$css_property ){
@@ -406,7 +427,7 @@ class Shortcode_CSSG {
 
        }
 
-        return implode( $css );
+        return ! empty( $css ) ? implode( $css ) : false;
     }
 
     /**
