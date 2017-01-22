@@ -67,6 +67,7 @@ class Shortcode_CSSG {
 
             $instance->styles = array();
             $instance->set_file_paths();
+            $instance->init_generator();
             $instance->get_registered_properties();
         }
 
@@ -110,6 +111,18 @@ class Shortcode_CSSG {
 
         // The desired location of the generated css.
         $this->css_dir = $this->parent_dir . $file_paths['css_file_path'];
+
+	}
+
+	/**
+	 * Setup the properties used for file paths.
+	 *
+	 * @since    1.0.0
+	 */
+	private function init_generator() {
+
+        require_once $this->scssg_dir . '/functions/generator.php' ;
+
 
 	}
 
@@ -462,7 +475,7 @@ class Shortcode_CSSG {
         $styles = ! empty( $styles ) ? $styles : false;
 
         // Get the theme options class instance using RF's beautiful proxy function.
-        $proxy = ReduxFrameworkInstances::get_instance( 'TC_Options' );
+        $filesystem = Filesystem_Proxy::get_instance();
 
         // Almost there... Just need to apply some filters.
         $styles = apply_filters( 'filter_shortcode_css', $styles );
@@ -471,6 +484,7 @@ class Shortcode_CSSG {
         $shortcode_css = array( 'content' => $styles );
 
         // And Voila.. Add the contents to the css file.
-        $proxy->filesystem->execute( 'put_contents', $this->css_dir, $shortcode_css );
+       $filesystem->execute( 'put_contents', $this->css_dir, $shortcode_css );
+
     }
 }
