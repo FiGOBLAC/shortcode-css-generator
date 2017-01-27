@@ -1,8 +1,8 @@
 <?php
+
 /**
- * The file is used to generate the css for shortcodes
  *
- * The Filesystem_Proxy is a slightly modified verstion of
+ * The Shortcode_CSSG_Filesystem is a slightly modified verstion of
  * the Redux_Filesystem class developed by the Redux Framework.
  *
  * The Redux Framework site: https://reduxframework.com
@@ -17,9 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! class_exists( 'Filesystem_Proxy' ) ) {
+if ( ! class_exists( 'Shortcode_CSSG_Filesystem' ) ) {
 
-    class Filesystem_Proxy {
+    class Shortcode_CSSG_Filesystem {
 
         /**
          * Instance of this class.
@@ -285,5 +285,5 @@ if ( ! class_exists( 'Filesystem_Proxy' ) ) {
         }
     }
 
-    Filesystem_Proxy::get_instance();
+    Shortcode_CSSG_Filesystem::get_instance();
 }
