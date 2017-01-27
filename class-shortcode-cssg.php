@@ -474,7 +474,7 @@ class Shortcode_CSSG {
         // One rediculously long string of css declarations coming up...
         $styles = ! empty( $styles ) ? $styles : false;
 
-        // Get the theme options class instance using RF's beautiful proxy function.
+        // Load the wp filesystem proxy.
         $filesystem = Filesystem_Proxy::get_instance();
 
         // Almost there... Just need to apply some filters.
