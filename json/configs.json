@@ -1,3 +1,4 @@
 {
-    "css_file_path" : "/shortcode-cssg/css/scss.css"
+    "css_file_path" : "/shortcode-cssg/css/scss.css",
+    "generate-css-stylesheet" : true
 }

@@ -1,4 +1,5 @@
 <?php
+namespace SCSSG;
 
 if( ! class_exists( 'Shortcode_CSSG' ) ) {
 
@@ -77,8 +78,11 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 
 				$instance->styles = array();
 				$instance->set_file_paths();
+				$instance->load_configurations();
+				$instance->load_generator_config();
 				$instance->init_filesystem_proxy();
 				$instance->get_registered_properties();
+
 			}
 
 			return $instance;
@@ -113,19 +117,34 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			// The parent directory of this file.
 			$this->scssg_dir = dirname( __FILE__ , 1 );
 
-			// Configurations for custom file paths.
-			$file_path_configs = file_get_contents(  $this->scssg_dir . '/json/configs.json' );
+		}
 
-			// Custom File path configs converted to array.
-			$file_paths = json_decode( $file_path_configs, TRUE );
+		/**
+		 * Loads the configuration file.
+		 *
+		 * @since    1.0.0
+		 */
+		private function load_configurations() {
 
-			// The desired location of the generated css.
-			$this->css_dir = $this->parent_dir . $file_paths['css_file_path'];
+			// Get configuration settings.
+			$configs = file_get_contents( $this->scssg_dir . '/json/configs.json' );
+
+			// Make them available to the world...
+			$this->configs = json_decode( $configs, TRUE );
 
 		}
 
 		/**
-		 * Initialize filesystem proxy function
+		 * Loads configuration for generating the stylesheet.
+		 *
+		 * @since    1.0.0
+		 */
+		private function load_generator_config() {
+			$this->generate_stylesheet = $this->configs['generate-css-stylesheet'];
+		}
+
+		/**
+		 * Initialize filesystem proxy function.
 		 *
 		 * @since    1.0.0
 		 */
@@ -487,11 +506,16 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			// Almost there... Just need to apply some filters.
 			$styles = apply_filters( 'filter_shortcode_css', $styles );
 
-			// Officially assign the content.
-			$shortcode_css = array( 'content' => $styles );
+			// Where should we generate the stylesheet?
+			$css_dir = $this->parent_dir . $this->configs['css_file_path'];
+
+			// If the generator goes out... party over. Otherwise do ya thing.
+			$css = ( $this->generate_stylesheet === true ) ? $styles : false;
 
 			// And Voila.. Add the contents to the css file.
-		   $this->filesystem->execute( 'put_contents', $this->css_dir, $shortcode_css );
+			$this->filesystem->execute( 'put_contents', $css_dir, array( 'content' => $css ) );
+
+			return $this->styles;
 
 		}
 	}
