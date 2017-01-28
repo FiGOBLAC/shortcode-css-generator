@@ -268,7 +268,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 				$registered_selectors = $registered_properties[ $css_property ];
 
 				// Stitch together the propoerty selector.
-				$selector = ! empty( $registered_selectors ) ? $shortcode_id . ' ' . $registered_selectors : $shortcode_id;
+				$selector = ! empty( $registered_selectors ) ? $shortcode_id . $registered_selectors : $shortcode_id;
 
 				if( strpos( $selector , '__' ) ){
 
@@ -427,7 +427,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			   $declaration = property_exists( $configuration->declarations, $user_option ) ? (array)$configuration->declarations->$user_option : FALSE;
 
 			   // Skip if there are no declarations or elements assigned.
-			   if( ( false == $declaration ) || ( ! $has_elements ) ){
+			   if( ( false == $declaration ) ){
 				   continue;
 			   }
 

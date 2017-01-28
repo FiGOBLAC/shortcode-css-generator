@@ -2,7 +2,7 @@
 
     "background-color": "",
     "background-image": "",
-    "background-size": ".myclass",
+    "background-size": "",
     "background-repeat": "",
     "background-attachment": "",
     "background-position": "",
@@ -16,6 +16,7 @@
     "padding-bottom": "",
     "padding-left": "",
     "padding-right": "",
+    "float": "",
     "border": "",
     "borde-left": "",
     "border-right": "",
@@ -38,19 +39,19 @@
     "vertical-align": "",
     "font-style": "",
     "font-family": "",
-    "font-size": ".my-font-size",
+    "font-size": "",
     "line_height": "",
     "color": "",
     "text-align": "",
     "opacity": "",
 
-    "link-color-sample": "a__color",
-    "link-hover-sample": "a:hover__color",
+    "link-color-sample": " a__color",
+    "link-hover-sample": " a:hover__color",
 
     "gradient-sample": {
 
         "elements": {
-            "all": ".my-shortcode-class"
+            "all": " .my-shortcode-class"
         },
 
         "restrictions": {
