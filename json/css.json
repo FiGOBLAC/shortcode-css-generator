@@ -51,7 +51,7 @@
     "gradient-sample": {
 
         "elements": {
-            "all": " .my-shortcode-class"
+            "all": " .my-shortcode-sample"
         },
 
         "restrictions": {

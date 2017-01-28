@@ -1,5 +1,4 @@
 <?php
-namespace SCSSG;
 
 if( ! class_exists( 'Shortcode_CSSG' ) ) {
 
