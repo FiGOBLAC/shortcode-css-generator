@@ -1,4 +1,5 @@
 <?php
+
 function shortcode_1( $atts, $content, $shortcode ){
 
     $defaults = array(
@@ -9,7 +10,7 @@ function shortcode_1( $atts, $content, $shortcode ){
         'text-align'        =>'center',
         'padding'           =>'5px;',
         'color'             =>'white',
-        'background-color'  =>'#0b6c89',
+        'background-color'  =>'rgba(188, 54, 142, 0.97)',
     );
 
     $defaults = shortcode_atts( $defaults, $atts , $shortcode );

@@ -66,7 +66,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 * @access   public
 		 *
 		 */
-		public static function get_instance() {
+		public static function get_instance( $config_dir ) {
 
 			static $instance = null;
 
@@ -75,7 +75,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 				$instance = new self;
 
 				$instance->styles = array();
-				$instance->set_file_paths();
+				$instance->set_file_paths( $config_dir );
 				$instance->load_configurations();
 				$instance->load_generator_config();
 				$instance->init_filesystem_proxy();
@@ -107,13 +107,16 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 *
 		 * @since    1.0.0
 		 */
-		private function set_file_paths() {
+		private function set_file_paths( $config_dir ) {
 
 			// Parent directory outside the shortcode css generator.
 			$this->parent_dir = dirname( __FILE__ , 2 );
 
 			// The parent directory of this file.
 			$this->scssg_dir = dirname( __FILE__ , 1 );
+
+			// Path to the configurations file
+			$this->config_dir = $config_dir;
 
 		}
 
@@ -124,10 +127,8 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 */
 		private function load_configurations() {
 
-			// Get configuration settings.
-			$configs = file_get_contents( $this->scssg_dir . '/json/configs.json' );
+			$configs = file_get_contents( $this->config_dir . '/json/configs.json' );
 
-			// Make them available to the world...
 			$this->configs = json_decode( $configs, TRUE );
 
 		}
@@ -160,7 +161,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 */
 		private function get_registered_properties() {
 
-			$registered_properties = file_get_contents(  $this->scssg_dir . '/json/css.json' );
+			$registered_properties = file_get_contents( $this->config_dir . '/json/css.json' );
 
 			$this->registered_properties = (array) json_decode( $registered_properties );
 
