@@ -1,10 +1,13 @@
 <?php
+add_shortcode( 'my_shortcode', 'shortcode_1');
+add_shortcode( 'my_shortcode2', 'shortcode2');
+add_shortcode( 'my_shortcode3', 'shortcode3');
 
 function shortcode_1( $atts, $content, $shortcode ){
 
     $defaults = array(
 
-        'id'                =>'my-id',
+        'id'                =>'shortcode-1',
         'class'             =>'',
         'font-size'         =>'18px',
         'text-align'        =>'center',
@@ -22,13 +25,11 @@ function shortcode_1( $atts, $content, $shortcode ){
     return "<div id='$id' class='$class my-shortcode-sample'>$content</div>";
 }
 
-add_shortcode( 'my_shortcode', 'shortcode_1');
-
 function shortcode2( $atts, $content, $shortcode ){
 
     $defaults = array(
 
-        'id'                        =>'sc2',
+        'id'                        =>'shortcode-2',
         'class'                     => 'my-shortcode-sample',
         'font-size'                 =>'18px',
         'text-align'                =>'center',
@@ -45,4 +46,24 @@ function shortcode2( $atts, $content, $shortcode ){
     return "<div id='$id' class='$class'>$content</div>";
 }
 
-add_shortcode( 'my_shortcode2', 'shortcode2');
+function shortcode3( $atts, $content, $shortcode ){
+
+    $defaults = array(
+
+        'id'                        => 'shortcode-3',
+        'class'                     => 'my-shortcode-sample',
+        'font-size'                 => '18px',
+        'text-align'                => 'center',
+        'color'                		=> 'center',
+        'gradient-sample'           => 'center',
+        'gradient-sample-color'     => '#0b6c89',
+    );
+
+    $defaults = shortcode_atts( $defaults, $atts , $shortcode );
+
+    extract( $defaults ) ;
+
+    shortcode_cssg( $shortcode, $defaults );
+
+    return "<hr id='$id' class='$class'>$content</hr>";
+}
