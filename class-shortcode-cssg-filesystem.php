@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  * The Shortcode_CSSG_Filesystem is a slightly modified verstion of
