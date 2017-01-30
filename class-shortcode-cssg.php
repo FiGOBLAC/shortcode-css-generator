@@ -505,7 +505,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			$styles = ! empty( $styles ) ? $styles : false;
 
 			// Almost there... Just need to apply some filters.
-			$styles = apply_filters( 'filter_shortcode_css', $styles );
+			$styles = apply_filters( 'filter_shortcode_css', $styles, $shortcode );
 
 			// Where should we generate the stylesheet?
 			$css_dir = $this->parent_dir . $this->configs['css_file_path'];
