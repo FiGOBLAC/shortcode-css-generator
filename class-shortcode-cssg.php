@@ -151,7 +151,11 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 * @since    1.0.0
 		 */
 		private function load_generator_config() {
-			$this->generate_stylesheet = $this->configs['generate-css-stylesheet'];
+
+            $config = $this->configs['generate-css-stylesheet'];
+
+            $this->generate_stylesheet = ( ! empty( $config ) ) ? $config : false;
+
 		}
 
 		/**
@@ -507,8 +511,10 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			// Almost there... Just need to apply some filters.
 			$styles = apply_filters( 'filter_shortcode_css', $styles, $shortcode );
 
-			// Where should we generate the stylesheet?
-			$css_dir = $this->parent_dir . $this->configs['css_file_path'];
+            // Where should we generate the stylesheet?
+            $css_dir = ( isset ( $this->configs ) && array_key_exists( 'css_file_path', $this->configs ) )
+                ?  $this->parent_dir . $this->configs['css_file_path']
+                :  $this->parent_dir . "/shortcode-cssg/css/shortcodes.css";
 
 			// If the generator goes out... party over. Otherwise do ya thing.
 			$css = ( $this->generate_stylesheet === true ) ? $styles : false;
