@@ -1,4 +1,5 @@
 <?php
+
 if( ! class_exists( 'Shortcode_CSSG' ) ) {
 
 	/**
@@ -66,22 +67,17 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 * @access   public
 		 *
 		 */
-		public static function get_instance( $caller, $parent_dir, $cssg_dir ) {
+		public static function get_instance( $identity ) {
 
 			static $instance = null;
 
 			if( is_null( $instance ) ) {
 				$instance = new self;
-				$instance->caller = $caller;
-				$instance->styles = array();
+				$instance->caller = $identity['caller'];
+				$instance->init( $identity );
 			}
 
-			$instance->run_caller_id( $caller );
-			$instance->set_file_paths( $parent_dir, $cssg_dir );
-			$instance->load_configurations();
-			$instance->load_generator_config();
-			$instance->init_filesystem_proxy();
-			$instance->get_registered_properties();
+			$instance->run_caller_id( $identity );
 
 			return $instance;
 
@@ -107,11 +103,29 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 *
 		 * @since    1.0.0
 		 */
-		private function run_caller_id( $caller ) {
+		private function init( $identity ) {
 
-			if( $this->caller !== $caller ) {
-				$this->styles = array();
-				$this->caller = $caller;
+			$this->styles = array();
+
+			$this->set_file_paths( $identity );
+			$this->load_configurations();
+			$this->load_generator_config();
+			$this->init_filesystem_proxy();
+			$this->get_registered_properties();
+
+		}
+
+		/**
+		 * Setup the properties used for file paths.
+		 *
+		 * @since    1.0.0
+		 */
+		private function run_caller_id( $identity ) {
+
+			if( $this->caller !== $identity['caller'] ) {
+				$this->caller = $identity['caller'];
+
+				$this->init( $identity );
 			}
 		}
 
@@ -120,27 +134,13 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 *
 		 * @since    1.0.0
 		 */
-		private function set_file_paths( $parent_dir, $cssg_dir ) {
+		private function set_file_paths( $identity ) {
 
 			// Parent directory outside the shortcode css generator.
-			$this->parent_dir = $parent_dir;
+			$this->parent_dir = $identity['parent_dir'];
 
 			// The parent directory of this file.
-			$this->scssg_dir = $cssg_dir;
-		}
-
-		/**
-		 * Setup the properties used for file paths.
-		 *
-		 * @since    1.0.0
-		 */
-		public function set_paths( $parent_dir, $cssg_dir) {
-
-			// Parent directory outside the shortcode css generator.
-			$parent_dir = var_dump( $parent_dir );
-
-			// The parent directory of this file.
-			$cssg_dir = var_dump( $cssg_dir );
+			$this->scssg_dir = $identity['scssg_dir'];
 		}
 
 		/**

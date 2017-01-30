@@ -15,6 +15,12 @@ require dirname( __FILE__ ) . '/class-shortcode-cssg.php';
 * @author     FiGO BLAC <figoblacmedia@yahoo.com>
 */
 function shortcode_cssg( $shortcode, $defaults ){
-    $CSSG = Shortcode_CSSG::get_instance( __FUNCTION__, dirname( __FILE__,2 ), dirname( __FILE__ ) );
+
+	$caller 	=__FUNCTION__;
+	$parent_dir = dirname( __FILE__, 2 );
+	$scssg_dir  = dirname( __FILE__ );
+
+    $CSSG = Shortcode_CSSG::get_instance( compact( 'caller', 'parent_dir', 'scssg_dir' ) );
+
     return $CSSG->shortcode_cssg( $shortcode, $defaults );
 }
