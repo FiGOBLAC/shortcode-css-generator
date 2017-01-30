@@ -139,7 +139,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 */
 		private function load_configurations() {
 
-			$configs = file_get_contents( $this->scssg_dir . '/json/configs.json' );
+			$configs = file_get_contents( $this->scssg_dir . 'json/configs.json' );
 
 			$this->configs = json_decode( $configs, TRUE );
 
@@ -165,7 +165,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 */
 		private function init_filesystem_proxy() {
 
-			require_once $this->scssg_dir . '/class-shortcode-cssg-filesystem.php';
+			require_once $this->scssg_dir . 'class-shortcode-cssg-filesystem.php';
 
 			$this->filesystem = Shortcode_CSSG_Filesystem::get_instance();
 		}
@@ -177,7 +177,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 */
 		private function get_registered_properties() {
 
-			$registered_properties = file_get_contents( $this->scssg_dir . '/json/css.json' );
+			$registered_properties = file_get_contents( $this->scssg_dir . 'json/css.json' );
 
 			$this->registered_properties = (array) json_decode( $registered_properties );
 

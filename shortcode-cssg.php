@@ -18,8 +18,8 @@ require dirname( __FILE__ ) . '/class-shortcode-cssg.php';
 function shortcode_cssg( $shortcode, $defaults ){
 
 	$caller 	=__FUNCTION__;
-	$parent_dir = dirname( __FILE__, 2 );
-	$scssg_dir  = dirname( __FILE__ );
+	$parent_dir = trailingslashit( dirname( __FILE__, 2 ) );
+	$scssg_dir  = trailingslashit( dirname( __FILE__ ) );
 
     $CSSG = Shortcode_CSSG::get_instance( compact( 'caller', 'parent_dir', 'scssg_dir' ) );
 
