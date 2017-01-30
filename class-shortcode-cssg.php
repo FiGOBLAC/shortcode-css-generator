@@ -512,7 +512,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			$styles = apply_filters( 'filter_shortcode_css', $styles, $shortcode );
 
             // Where should we generate the stylesheet?
-            $css_dir = ( isset ( $this->configs ) && array_key_exists( 'css_file_path', $this->configs ) )
+            $css_dir = ( isset ( $this->configs['css_file_path'] ) && array_key_exists( 'css_file_path', $this->configs ) )
                 ?  $this->parent_dir . $this->configs['css_file_path']
                 :  $this->parent_dir . "/shortcode-cssg/css/shortcodes.css";
 
