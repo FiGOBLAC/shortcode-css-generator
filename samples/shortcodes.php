@@ -13,7 +13,7 @@ function shortcode_1( $atts, $content, $shortcode ){
         'text-align'        =>'center',
         'padding'           =>'5px;',
         'color'             =>'white',
-        'background-color'  =>'rgba(188, 54, 142, 0.97)',
+        'background-color'  =>'rgba(105, 87, 183, 0.97)',
     );
 
     $defaults = shortcode_atts( $defaults, $atts , $shortcode );
@@ -30,11 +30,13 @@ function shortcode2( $atts, $content, $shortcode ){
     $defaults = array(
 
         'id'                        =>'shortcode-2',
-        'class'                     => 'my-shortcode-sample',
-        'font-size'                 =>'18px',
-        'text-align'                =>'center',
-        'gradient-sample'           =>'center',
-        'gradient-sample-color'     =>'#0b6c89',
+        'class'             =>'',
+        'font-size'         =>'18px',
+        'text-align'        =>'center',
+        'padding'           =>'5px;',
+        'color'             =>'white',
+        'background-color'  =>'rgba(188, 54, 142, 0.97)',
+
     );
 
     $defaults = shortcode_atts( $defaults, $atts , $shortcode );
@@ -51,12 +53,12 @@ function shortcode3( $atts, $content, $shortcode ){
     $defaults = array(
 
         'id'                        => 'shortcode-3',
-        'class'                     => 'my-shortcode-sample',
-        'font-size'                 => '18px',
-        'text-align'                => 'center',
-        'color'                		=> 'center',
-        'gradient-sample'           => 'center',
-        'gradient-sample-color'     => '#0b6c89',
+        'class'             =>'',
+        'font-size'         =>'18px',
+        'text-align'        =>'center',
+        'padding'           =>'5px;',
+        'color'             =>'white',
+        'background-color'  =>'rgba(188, 54, 142, 0.97)',
     );
 
     $defaults = shortcode_atts( $defaults, $atts , $shortcode );
@@ -65,5 +67,5 @@ function shortcode3( $atts, $content, $shortcode ){
 
     shortcode_cssg( $shortcode, $defaults );
 
-    return "<hr id='$id' class='$class'>$content</hr>";
+    return "<div id='$id' class='$class'>$content</div>";
 }

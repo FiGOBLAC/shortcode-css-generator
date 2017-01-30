@@ -23,15 +23,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		protected $shortcode_defaults;
 
 		/**
-		 * Stores each shortcode id with shortcode's generated css.
-		 *
-		 * @since    1.0.0
-		 * @access   public
-		 */
-		protected $shortcode_styles;
-
-		/**
-		 * Stores the combined css for all shorcodes.
+		 * Stores the combined css for each shorcode.
 		 *
 		 * @since    1.0.0
 		 * @access   public
@@ -39,7 +31,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		protected $styles;
 
 		/**
-		 * Stores the combined css for all shorcodes.
+		 * The filesystem proxy class.
 		 *
 		 * @since    1.0.0
 		 * @access   public
@@ -47,7 +39,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		protected $filesystem;
 
 		/**
-		 * Stores the combined css for all shorcodes.
+		 * The path to the shortcode css generatory folder.
 		 *
 		 * @since    1.0.0
 		 * @access   public
@@ -72,9 +64,10 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			static $instance = null;
 
 			if( is_null( $instance ) ) {
+
 				$instance = new self;
-				$instance->caller = $identity['caller'];
 				$instance->init( $identity );
+				$instance->styles[ $identity['caller'] ] = '';
 			}
 
 			$instance->run_caller_id( $identity );
@@ -84,13 +77,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		}
 
 		/**
-		 * Initialize the class and set its properties.
-		 *
-		 * Intiates the container for the css styles.
-		 *
-		 * Initializes the file paths.
-		 *
-		 * Sets up the registered css properties.
+		 * Constructor
 		 *
 		 * @since    1.0.0
 		 * @access   public
@@ -105,18 +92,20 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 */
 		private function init( $identity ) {
 
-			$this->styles = array();
-
 			$this->set_file_paths( $identity );
 			$this->load_configurations();
 			$this->load_generator_config();
 			$this->init_filesystem_proxy();
 			$this->get_registered_properties();
 
+			$this->caller = $identity['caller'];
 		}
 
 		/**
-		 * Setup the properties used for file paths.
+		 * Gets and stores the name of the funtion.
+		 *
+		 * If another caller is detected other than the current
+		 * caller the new caller will replaces the old
 		 *
 		 * @since    1.0.0
 		 */
@@ -365,8 +354,8 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			// Registered css properties.
 			$registered_properties = $this->registered_properties;
 
-			// Create an id used to identify each shortcode's set of styles.
-			$shortcode_styles_id =  $this->shortcode . '_' . $shortcode_defaults['id'];
+			// Get the current owner ( function that called this class ).
+			$stylesheet_owner =  $this->caller;
 
 			// Extract all the css properties and values that matches registered properties.
 			$shortcode_css  = array_intersect_key( $shortcode_defaults, $registered_properties );
@@ -387,21 +376,12 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			// Combine into one string of css from both custom property and object.
 			$shortcode_css = $custom_property_css . $custom_object_css;
 
-			// Store the css styles that was set for the shortcode.
-			$this->shortcode_styles[ $shortcode_styles_id ] = $shortcode_css;
-
-			if( array_key_exists( $shortcode_styles_id, $this->shortcode_styles ) ) {
-
-				if( empty( $this->styles ) ) :
-
-				$this->styles = $this->shortcode_styles[ $shortcode_styles_id ];
-
-				else:
-
-				$this->styles =  $this->styles . $this->shortcode_styles[ $shortcode_styles_id ] ;
-
-				endif;
+			if( array_key_exists( $stylesheet_owner, $this->styles ) ){
+				$shortcode_css = $this->styles[ $stylesheet_owner ] . $shortcode_css;
 			}
+
+			$this->styles[ $stylesheet_owner ] = $shortcode_css;
+
 		}
 
 		/**
@@ -518,8 +498,8 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			// Generate the all styles for the current shortcode.
 			$this->generate_shortcode_css();
 
-			// Get all styles generated for the shortcode.
-			$styles = $this->styles;
+			// Get the styles from the current owner.
+			$styles = $this->styles[ $this->caller ];
 
 			// One rediculously long string of css declarations coming up...
 			$styles = ! empty( $styles ) ? $styles : false;
