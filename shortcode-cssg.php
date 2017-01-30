@@ -3,16 +3,17 @@
 require dirname( __FILE__ ) . '/class-shortcode-cssg.php';
 
 /**
-* Initiates the generator class and runs css genearator funcion.
+* Wrapper for the shortcode css generator function.
 *
-* In case there is another instance of the Shortcode_CSSG Class
-* this function sets a path to the correct configuration
-* directory regardless of where the location of the shortcode
-* when it iscalled.
+* In case there is another instance of the Shortcode_CSSG Class,
+* this function passes its name to the class so it can be used
+* to identify and set the correct path to the configuration file
+* that belongs to this specific instance.
 *
 * @package    Shortcode_CSSG
 *
-* @author     FiGO BLAC <figoblacmedia@yahoo.com>
+* @param   string $shorcode   The name of the shortcode
+* @param   string $defaults   The default attributes.
 */
 function shortcode_cssg( $shortcode, $defaults ){
 
