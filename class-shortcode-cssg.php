@@ -15,12 +15,19 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 	class Shortcode_CSSG {
 
 		/**
+		 * Stores the name of the current shortcode being processed.
+		 *
+		 * @since    1.0.0
+		 * @access   public
+		 */
+		protected $shortcode;
+		/**
 		 * Stores the shortcode defaults.
 		 *
 		 * @since    1.0.0
 		 * @access   public
 		 */
-		protected $shortcode_defaults;
+		protected $defaults;
 
 		/**
 		 * Stores the combined css for each shorcode.
@@ -94,9 +101,8 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 
 			$this->set_file_paths( $identity );
 			$this->load_configurations();
-			$this->load_generator_config();
+			$this->init_stylesheet_generator();
 			$this->init_filesystem_proxy();
-			$this->get_registered_properties();
 
 			$this->caller = $identity['caller'];
 		}
@@ -146,19 +152,53 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		}
 
 		/**
-		 * Loads configuration for generating the stylesheet.
+		 * Set up variables needed by the methods in the application.
 		 *
 		 * @since    1.0.0
+		 *
+		 * @param   string $shorcode   The name of the shortcode
+		 * @param   string $string    The shortcode's attributes.
 		 */
-		private function load_generator_config() {
+		private function load_shortcode_properties( $shortcode, $defaults ) {
 
-            $config = $this->configs['generate-css-stylesheet'];
+			// Store shortcode name
+			$this->shortcode = $shortcode;
 
-            $this->generate_stylesheet = ( ! empty( $config ) ) ? $config : false;
+			// Shortcode defaults.
+			$this->defaults = array_filter( $defaults );
+
+			// Sir, Maam... I need to see some id.
+			$this->shortcode_id = '#' . $this->defaults['id'];
+
+            // Get the pre regestered properties.
+			$registered_properties = file_get_contents( $this->scssg_dir . 'json/css.json' );
+
+            // Working with them as arrays.
+			$registered_properties = (array) json_decode( $registered_properties );
+
+            // Main css declaration filename.
+            $css_declaration_file = $this->scssg_dir . $this->configs['css_lib_path'] . "css.lib.json" ;
+
+            // Shortcode code declaration filename.
+            $shortcode_declaration_file = $this->scssg_dir . $this->configs['css_lib_path'] . "{$shortcode}.lib.json" ;
+
+            // Load the declaration library.
+			$css_declaration_file = file_exists( $shortcode_declaration_file ) ? $shortcode_declaration_file : $css_declaration_file;
+
+            // Load the declaration library file
+			$css_declaration_lib = file_get_contents( $css_declaration_file );
+
+            // Working with them as arrays.
+			$this->declaration_lib = (array) json_decode( $css_declaration_lib, true );
+
+            // Load only the options that have values set for them.
+            $this->registered_properties = array_filter( array_intersect_key( $registered_properties, $this->defaults ) );
+
+            var_dump( $this->declaration_lib );
 
 		}
 
-		/**
+        /**
 		 * Initialize filesystem proxy function.
 		 *
 		 * @since    1.0.0
@@ -171,36 +211,15 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		}
 
 		/**
-		 * Get and store the registered css properties.
+		 * Initializes stylesheet generator based on configuration.
 		 *
 		 * @since    1.0.0
 		 */
-		private function get_registered_properties() {
+		private function init_stylesheet_generator() {
 
-			$registered_properties = file_get_contents( $this->scssg_dir . 'json/css.json' );
+            $config = $this->configs['generate-css-stylesheet'];
 
-			$this->registered_properties = (array) json_decode( $registered_properties );
-
-		}
-
-		/**
-		 * Set up variables needed by the methods in the application.
-		 *
-		 * @since    1.0.0
-		 *
-		 * @param   string $shorcode   The name of the shortcode
-		 * @param   string $string    The shortcode's attributes.
-		 */
-		private function setup_shortcode_vars( $shortcode, $defaults ) {
-
-			// Store shortcode name
-			$this->shortcode = $shortcode;
-
-			// Shortcode defaults.
-			$this->shortcode_defaults = $defaults;
-
-			// Sir, Maam... I need to see some id.
-			$this->shortcode_id = '#' . $this->shortcode_defaults['id'];
+            $this->generate_stylesheet = ( ! empty( $config ) ) ? $config : false;
 
 		}
 
@@ -257,8 +276,8 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			$property_name = str_replace( array( '{','}' ), '', $flag );
 
 			 // Replace the flag with value shortcode value from the user. // Todo: Add custom error message.
-			if( false !== $flag && key_exists( $property_name, $this->shortcode_defaults ) ) {
-				$css_value = str_replace( $flag, $this->shortcode_defaults[ $property_name ], $css_value );
+			if( false !== $flag && key_exists( $property_name, $this->defaults ) ) {
+				$css_value = str_replace( $flag, $this->defaults[ $property_name ], $css_value );
 			}
 		}
 
@@ -271,7 +290,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 * @since    1.0.0
 		 * @access   private
 		 *
-		 * @param   array $shortcode_defaults        An array of shortcode attributes
+		 * @param   array $defaults        An array of shortcode attributes
 		 * @param   array $registered_properties     User registered css properties
 		 * @param   array $shortcode_css             Shortcode css => value pairs
 		 * @return  string                           Valid css declarations.
@@ -348,12 +367,12 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		private function generate_shortcode_css() {
 
 			// Sir, Maam... I need to see some id.
-			if( empty( $this->shortcode_defaults['id'] ) ) {
+			if( empty( $this->defaults['id'] ) ) {
 				return;
 			}
 
 			// Get the defaults;
-			$shortcode_defaults = $this->shortcode_defaults;
+			$defaults = $this->defaults;
 
 			// Registered css properties.
 			$registered_properties = $this->registered_properties;
@@ -362,7 +381,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			$stylesheet_owner =  $this->caller;
 
 			// Extract all the css properties and values that matches registered properties.
-			$shortcode_css  = array_intersect_key( $shortcode_defaults, $registered_properties );
+			$shortcode_css  = array_intersect_key( $defaults, $registered_properties );
 
 			// Remove css properties with no values.
 			$shortcode_css  = array_filter( $shortcode_css );
@@ -398,7 +417,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 * @since    1.0.0
 		 * @access   private
 		 *
-		 * @param   array $shortcode_defaults   An array of shortcode attributes
+		 * @param   array $defaults   An array of shortcode attributes
 		 * @param   array $shortcode_css        Shortcode css => value pairs
 		 * @return  Valid css declarations.
 		 */
@@ -462,7 +481,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			   $secondary_option = ( false !== $flag ) ? str_replace( array( '{','}' ), '', $flag ) : false;
 
 			   // Check to see if the seciondary option is being used in the shortcode defaults.
-			   $secondary_option_active = ( false !== $secondary_option ) && array_key_exists( $secondary_option , $this->shortcode_defaults );
+			   $secondary_option_active = ( false !== $secondary_option ) && array_key_exists( $secondary_option , $this->defaults );
 
 			   // Convert search flags into values from shortcode defaults.
 			   if( $secondary_option_active ) {
@@ -497,32 +516,32 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		public function shortcode_cssg( $shortcode, $defaults ) {
 
 			// Setup shared variables.
-			$this->setup_shortcode_vars( $shortcode, $defaults );
+			$this->load_shortcode_properties( $shortcode, $defaults );
 
-			// Generate the all styles for the current shortcode.
-			$this->generate_shortcode_css();
-
-			// Get the styles from the current owner.
-			$styles = $this->styles[ $this->caller ];
-
-			// One rediculously long string of css declarations coming up...
-			$styles = ! empty( $styles ) ? $styles : false;
-
-			// Almost there... Just need to apply some filters.
-			$styles = apply_filters( 'filter_shortcode_css', $styles, $shortcode );
-
-            // Where should we generate the stylesheet?
-            $css_dir = ( isset ( $this->configs['css_file_path'] ) && array_key_exists( 'css_file_path', $this->configs ) )
-                ?  $this->parent_dir . $this->configs['css_file_path']
-                :  $this->parent_dir . "/shortcode-cssg/css/shortcodes.css";
-
-			// If the generator goes out... party over. Otherwise do ya thing.
-			$css = ( $this->generate_stylesheet === true ) ? $styles : false;
-
-			// And Voila.. Add the contents to the css file.
-			$this->filesystem->execute( 'put_contents', $css_dir, array( 'content' => $css ) );
-
-			return $this->styles;
+//			// Generate the all styles for the current shortcode.
+//			$this->generate_shortcode_css();
+//
+//			// Get the styles from the current owner.
+//			$styles = $this->styles[ $this->caller ];
+//
+//			// One rediculously long string of css declarations coming up...
+//			$styles = ! empty( $styles ) ? $styles : false;
+//
+//			// Almost there... Just need to apply some filters.
+//			$styles = apply_filters( 'filter_shortcode_css', $styles, $shortcode );
+//
+//            // Where should we generate the stylesheet?
+//            $css_dir = ( isset ( $this->configs['css_file_path'] ) && array_key_exists( 'css_file_path', $this->configs ) )
+//                ?  $this->parent_dir . $this->configs['css_file_path'].$this->configs['css_file_name'];
+//                :  $this->parent_dir . "/shortcode-cssg/css/shortcodes.css";
+//
+//			// If the generator goes out... party over. Otherwise do ya thing.
+//			$css = ( $this->generate_stylesheet === true ) ? $styles : false;
+//
+//			// And Voila.. Add the contents to the css file.
+//			$this->filesystem->execute( 'put_contents', $css_dir, array( 'content' => $css ) );
+//
+//			return $this->styles;
 
 		}
 	}

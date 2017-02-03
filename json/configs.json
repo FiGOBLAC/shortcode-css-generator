@@ -1,4 +1,6 @@
 {
-    "css_file_path" : "shortcode-cssg/css/shortcodes.css",
+    "css_file_name" : "shortcodes.css",
+    "css_file_path" : "shortcode-cssg/css/",
+    "css_lib_path"  : "json/",
     "generate-css-stylesheet" : true
 }

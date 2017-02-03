@@ -12,7 +12,7 @@ function sample_shortcode( $atts, $content, $shortcode ){
 
         'id'                =>'shortcode-1',
         'class'             =>'shortcode-1',
-        'font-size'         =>'20px',
+        'font-size'         =>'',
         'text-align'        =>'center',
         'padding'           =>'8px',
         'color'             =>'white',
@@ -146,7 +146,7 @@ function sample_shortcode5( $atts, $content, $shortcode ){
 		'headerbox-background'  => "black url( $image_url ) center no-repeat"
     );
 
-    $defaults = shortcode_atts( $defaults, $atts , $shortcode );
+    $defaults = shortcode_atts( $defaults, $atts );
 
     extract( $defaults ) ;
 
