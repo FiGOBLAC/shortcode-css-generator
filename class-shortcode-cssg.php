@@ -174,10 +174,13 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			$registered_properties = file_get_contents( $this->scssg_dir . 'json/css.json' );
 
             // Working with them as arrays.
-			$registered_properties = (array) json_decode( $registered_properties );
+			$registered_properties = json_decode( $registered_properties, true );
+
+            // Load only the options that have values set for them.
+            $active_properties = array_filter( array_intersect_key( $registered_properties, $this->defaults ) );
 
             // Main css declaration filename.
-            $css_declaration_file = $this->scssg_dir . $this->configs['css_lib_path'] . "css.lib.json" ;
+            $css_declaration_file = $this->scssg_dir . $this->configs['css_lib_path'] . "css.lib.json";
 
             // Shortcode code declaration filename.
             $shortcode_declaration_file = $this->scssg_dir . $this->configs['css_lib_path'] . "{$shortcode}.lib.json" ;
@@ -189,12 +192,115 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			$css_declaration_lib = file_get_contents( $css_declaration_file );
 
             // Working with them as arrays.
-			$this->declaration_lib = (array) json_decode( $css_declaration_lib, true );
+			$css_declaration_lib = (array) json_decode( $css_declaration_lib, true );
 
-            // Load only the options that have values set for them.
-            $this->registered_properties = array_filter( array_intersect_key( $registered_properties, $this->defaults ) );
+            // Pre registered css properties for processing.
+			$this->process_property_configuration( $registered_properties, $active_properties, $defaults, $css_declaration_lib );
 
-            var_dump( $this->declaration_lib );
+		}
+
+        /**
+		 *
+         *
+         *
+         *
+         *
+		 *
+		 * @since    1.0.0
+         *
+         * @param   array $declaration_lib   Shortcode css declaration library
+		 */
+		private function process_property_configuration( $registered_properties, $active_properties, $defaults, $css_declaration_lib ) {
+
+            // Separate out all the properties that have special configurations.
+            $single_line_properties = array_filter( $active_properties, function( $property ){
+                return is_string( $property );
+            } );
+
+            // Separate out all the properties that have special configurations.
+            $configured_properties = array_filter( $active_properties, function( $property ){
+                return is_array( $property );
+            } );
+
+            // Checks for and applies option configuratoin overrides.
+            if( ! empty( $configured_properties ) ) {
+                $configured_properties = $this->activate_configuraton_overrides( $registered_properties, $configured_properties );
+            }
+
+        }
+
+        /**
+		 * Initialize and prep configurations for each of the shortcode"s
+         * options and prepare for processing.
+		 *
+		 * @since    1.0.0
+         *
+         * @param   array $declaration_lib   Shortcode css declaration library
+		 */
+		private function import_foreign_configurations( $configuration ) {
+
+
+		}
+
+        /**
+		 * Initialize and prep configurations for each of the shortcode"s
+         * options and prepare for processing.
+		 *
+		 * @since    1.0.0
+         *
+         * @param   array $declaration_lib   Shortcode css declaration library
+		 */
+		private function activate_configuraton_overrides( $registered_properties, $configured_properties  ) {
+
+            // Apply an any configuration overrides for this shortcode.
+            array_walk( $configured_properties, function( &$config, $property, $properties ){
+
+                if( array_key_exists( "{$property}:headerbox", $properties ) ){
+                    $config = $properties[ "{$property}:headerbox" ];
+                }
+
+
+                $selectors = array_filter( $config, function( $keys ) {
+                    return ( false !== strpos( $keys, 'selector') && ( false == strpos( $keys, ']') ) );
+
+                }, ARRAY_FILTER_USE_KEY );var_dump(  $selectors );
+
+
+                $overrides = array_filter( $config, function( $keys ) {
+                    return  ( false !== strpos( $keys, ']') ) ;
+
+                }, ARRAY_FILTER_USE_KEY );var_dump( $overrides );
+
+
+                array_walk( $config, function( &$setting, $handle, $overrides ){
+
+                    if( false !== strpos( $handle, ']') ) {
+                       $setting = false;
+                    }
+
+                    if(  array_key_exists( "[shortcode]:{$handle}", $overrides ) ) {
+                       $setting =  $overrides[ "[shortcode]:{$handle}" ];
+                    }
+
+                }, $overrides );
+
+                 $config = array_filter( $config ) ; var_dump( $config );
+
+
+            }, $registered_properties ); //var_dump( $config );
+        }
+
+
+        /**
+		 * Initialize and prep configurations for each of the shortcode"s
+         * options and prepare for processing.
+		 *
+		 * @since    1.0.0
+         *
+         * @param   array $declaration_lib   Shortcode css declaration library
+		 */
+		private function is_valid_css_property( $configuration ) {
+
 
 		}
 
