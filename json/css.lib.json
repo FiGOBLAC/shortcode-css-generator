@@ -1,79 +1,104 @@
 {
 
-	"selectors": {
+    "selectors": {
+        "headerbox": " .headerbox-lib",
+        "panelbox": " .panelbox-lib",
+        "imagebox": " imagebox-lib",
+        "container": " container-lib"
+    },
 
-		"headerbox:selector": " .panel-default > .transition, %1$s .panel-collapse > .panel-body",
-		"panelbox:selector": " .panel-default > .transition, %1$s .panel-collapse > .panel-body",
-		"imagebox:selector": " .panel-default > .panel-heading, %1$s .panel-collapse > .panel-body",
-		"container:selector": " .panel-default > .panel-heading, %1$s .panel-collapse > .panel-body"
-	},
+    "selector-value-override": {
+        "headerbox": " .headerbox-lib-value-or",
+        "panelbox": " .panelbox-lib-value-or",
+        "imagebox": " imagebox-lib-value-or",
+        "container": " container-lib-value-or"
+    },
 
-	"image-selectors": {
+    "selector-shortcode-override": {
+        "headerbox": " .headerbox-lib-shortcode-or",
+        "panelbox": " .panelbox-lib-shortcode-or",
+        "imagebox": " imagebox-lib-shortcode-or",
+        "container": " container-lib-shortcode-or"
+    },
 
-		"headerbox:selector": " .panel-default > .transition, %1$s .panel-collapse > .panel-body",
-		"panelbox:selector": " .panel-default > .transition, %1$s .panel-collapse > .panel-body",
-		"imagebox:selector": " .panel-default > .panel-heading, %1$s .panel-collapse > .panel-body",
-		"container:selector": " .panel-default > .panel-heading, %1$s .panel-collapse > .panel-body"
-	},
 
+    "gradient": {
 
-	"gradient": {
+        "left": {
+            "gradient-left": "gradient-left",
+            "border": "1px solid transparent-trans",
+            "-webkit-border-image": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
+            "-o-border-image": "-o-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
+            "-moz-border-image": "-moz-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))",
+            "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), {gradient-color}, rgba(0, 0, 0, 0))",
+            "border-image-slice": 1
+        },
 
-		"hover-up": {
-			"background:fb": "rgba(204,31,115,1)",
-			"background:wk": "-webkit-linear-gradient(top, rgba(204,31,115,1) 0%, rgba(133,20,75,1) 100%)",
-			"background:": "linear-gradient(to right, rgb(204, 31, 64) 0%, rgb(80, 12, 45) 100%)"
-		},
+        "right": {
+            "gradient-right": "gradient-right",
+            "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
+            "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
+            "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
+            "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
+            "border-image-slice": 1
+        },
 
-		"hover-up": {
-			"background:fb": "rgba(204,31,115,1)",
-			"background:wk": "-webkit-linear-gradient(top, rgba(204,31,115,1) 0%, rgba(133,20,75,1) 100%)",
-			"background:": "linear-gradient(to right, rgb(204, 31, 64) 0%, rgb(80, 12, 45) 100%)"
-		},
+        "up": {
+            "gradient-up": "gradient-up",
+            "border": "1px solid transparent",
+            "-webkit-border-image": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
+            "-o-border-image": "-o-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
+            "-moz-border-image": "-moz-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))",
+            "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), {gradient-color}, rgba(0, 0, 0, 0))",
+            "border-image-slice": 1
+        },
 
-		"horizontal": {
-			"background:fb": "#7474BF ; /* fallback for old browsers */",
-			"background:wk": "-webkit-linear-gradient(to left, {gradient-left} , {gradient-right}); /* Chrome 10-25, Safari 5.1-6 */",
-			"background": "linear-gradient(to left,  {gradient-left} , {gradient-right} ; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */"
-		},
+        "down": {
+            "gradient-down": "gradient-down",
+            "border": "1px solid transparent",
+            "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
+            "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
+            "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
+            "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
+            "border-image-slice": 1
+        }
 
-		"steller": {
-			"background:fb": "#7474BF; /* fallback for old browsers */",
-			"background:wk": "-webkit-linear-gradient(to left, #7474BF , #348AC7); /* Chrome 10-25, Safari 5.1-6 */",
-			"background": "linear-gradient(to left, #7474BF , #348AC7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */"
-		},
+    },
 
-		"maroon": {
-			"background:fb": "rgba(204,31,115,1)",
-			"background:wk": "-webkit-linear-gradient(top, rgba(204,31,115,1) 0%, rgba(133,20,75,1) 100%)",
-			"background:": "linear-gradient(to right, rgb(204, 31, 64) 0%, rgb(80, 12, 45) 100%)"
-		},
+    "transitions": {
 
-		"center": {
-			"border": "1px solid transparent",
-			"-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), {gradient-color}, rgba(0, 0, 0, 0))",
-			"-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), {gradient-color}, rgba(0, 0, 0, 0))",
-			"-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), {gradient-color}, rgba(0, 0, 0, 0))",
-			"-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), {gradient-color}, rgba(0, 0, 0, 0))",
-			"border-image-slice": 1
-		},
+        "left": {
+            "transition-left": "transition-left",
+            "background": "1px solid transparent-trans"
+        },
 
-		"left": {
-			"border": "1px solid transparent",
-			"-webkit-border-image": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
-			"-o-border-image": "-o-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
-			"-moz-border-image": "-moz-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))",
-			"-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), {gradient-color}, rgba(0, 0, 0, 0))",
-			"border-image-slice": 1
-		},
+        "right": {
+            "transitions-right": "transitions-right",
+            "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
+            "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
+            "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
+            "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
+            "border-image-slice": 1
+        },
 
-		"right": {
-			"border": "1px solid transparent",
-			"-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
-			"-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
-			"-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
-			"-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
-			"border-image-slice": 1
-		}
-	}
+        "up": {
+            "transitions-up": "transitions-up",
+            "border": "1px solid transparent",
+            "-webkit-border-image": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
+            "-o-border-image": "-o-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
+            "-moz-border-image": "-moz-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))",
+            "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), {gradient-color}, rgba(0, 0, 0, 0))",
+            "border-image-slice": 1
+        },
+
+        "down": {
+            "transitions-down": "transitions-down",
+            "border": "1px solid transparent",
+            "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
+            "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
+            "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
+            "-ms-border-image": "-ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
+            "border-image-slice": 1
+        }
+    }
 }

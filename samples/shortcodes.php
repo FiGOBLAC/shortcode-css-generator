@@ -12,7 +12,7 @@ function sample_shortcode( $atts, $content, $shortcode ){
 
         'id'                =>'shortcode-1',
         'class'             =>'shortcode-1',
-        'shortcode-option'  =>'testing',
+        'shortcode-option'  =>'left',
         'shortcode-option2'  =>'testing',
         'shortcode-option3'  =>'testing',
         'shortcode-option4'  =>'testing',
