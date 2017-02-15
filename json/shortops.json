@@ -1,5 +1,5 @@
 {
-    "OptionGroup":{
+    "OptionFields":{
         "UIPack":"My Custom Pack",
         "option-name":"Text",
         "option-name":"Textbox",
@@ -9,7 +9,7 @@
         "bio":"Textbox",
         "location":"google-maps",
         "option-name":"Textbox",
-        "[shortcode]:option-name:":"Textbxox",
-        "[shortcode]:name:":"Textbxox"
+        "[shortcode]:option-name:":"Textbox",
+        "[shortcode]:name:":"Textbox"
     }
 }

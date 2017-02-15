@@ -214,131 +214,110 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
             $css_selectors = []; //var_dump( $css_declaration_lib );
 
             // Separate out all the properties that have special configurations.
-            $single_line_properties = array_filter( $active_properties, function( $property ){
+            $property_configuration_strings = array_filter( $active_properties, function( $property ){
                 return is_string( $property );
             } );
 
-            // Separate out all the properties that have special configurations assigned.
-            $configured_properties = array_filter( $active_properties, function( $property ){
+            // Separate out all the properties tha have been configured via object.
+            $property_configuration_objects = array_filter( $active_properties, function( $property ){
                 return is_array( $property );
             } );
 
             // Checks for and applies option configuration overrides.
-            if( ! empty( $configured_properties ) ) {
+            if( ! empty( $property_configuration_objects ) ) {
 
-                $this->apply_configuraton_overrides( $registered_properties, $configured_properties ); //var_dump( $this->updated_config ) ;
+                // Apply any overrides found in the configuration.
+                $updated_config = $this->apply_configuraton_overrides( $registered_properties, $property_configuration_objects );
 
-                $declarations = array_filter( $this->updated_config, function( $keys ) {
-                    return ( false !== strpos( $keys, 'declaration') && ( false == strpos( $keys, ']') ) );
+                // Apply all css declaration filters set within the configuration.
+                $this->css_declaration_library = $this->apply_declaration_filters( $updated_config );
 
-                }, ARRAY_FILTER_USE_KEY ); var_dump(  $declarations );
+//
+//                $configured_selectors = array_filter( $this->updated_config, function( $keys ) {
+//                    return ( false !== strpos( $keys, 'selector') && ( false == strpos( $keys, ']') ) );
+//
+//                }, ARRAY_FILTER_USE_KEY ); //var_dump(  $configured_selectors );
+//
 
-                $configured_selectors = array_filter( $this->updated_config, function( $keys ) {
-                    return ( false !== strpos( $keys, 'selector') && ( false == strpos( $keys, ']') ) );
-
-                }, ARRAY_FILTER_USE_KEY ); //var_dump(  $configured_selectors );
-
-                $filters = array_filter( $this->updated_config, function( $keys ) {
-                    return  ( false !== strpos( $keys, 'filter') ) ;
-
-                }, ARRAY_FILTER_USE_KEY );var_dump( $filters );
-
-                $alias = array_filter( $this->updated_config, function( $keys ) {
-                    return  ( false !== strpos( $keys, 'alias') ) ;
-
-                }, ARRAY_FILTER_USE_KEY );//var_dump( $alias );
-
-                // Resolve all selectors that point to the selector library.
-                array_walk( $configured_selectors, function( &$selector, $handle ){
-
-                    if( ( strpos( $selector, '->' ) ) ) {
-
-                        $parts              = explode( '->' , trim( $selector) );
-                        $selector_object    = $parts[0];
-                        $selector_value     = $parts[1];
-
-                        $selector = $this->css_declaration_lib[ $selector_object][$selector_value]
-                            ? $this->css_declaration_lib[ $selector_object][$selector_value] : false;
-                    }
-                });
-
-                // Remove all unresolved selector assingments.
-                $configured_selectors = array_filter( $configured_selectors );
-
-                $selectors  = isset( $selectors ) ? array_merge( $selectors, $configured_selectors ) : $configured_selectors; var_dump( $selectors );
-
+//
+//                // Resolve all selectors that point to the selector library.
+//                array_walk( $configured_selectors, function( &$selector, $handle ){
+//
+//                    if( ( strpos( $selector, '->' ) ) ) {
+//
+//                        $parts              = explode( '->' , trim( $selector) );
+//                        $selector_object    = $parts[0];
+//                        $selector_value     = $parts[1];
+//
+//                        $selector = $this->css_declaration_lib[ $selector_object][$selector_value]
+//                            ? $this->css_declaration_lib[ $selector_object][$selector_value] : false;
+//                    }
+//                });
+//
+//                // Remove all unresolved selector assingments.
+//                $configured_selectors = array_filter( $configured_selectors );
+//
+//                $selectors  = isset( $selectors ) ? array_merge( $selectors, $configured_selectors ) : $configured_selectors; //var_dump( $selectors );
+//
             }
+//
+//            if( ! empty ( $selectors ) ){
+//
+                    // The value set by the user for the current option.
+//                $shortcode_option_value = $this->defaults[ $this->option_name ];
+//
+//                foreach( $selectors as $handle => $selector ) {
+//
+//                    // Get the name of the declaraton object.
+//                    $declaration_name = explode( ':', $handle )[0]; //var_dump( $declaration_name ) ;
+//
+//                    // Get the value of the current option.
+//                    $option_value = $this->defaults[  $this->option_name ];
+//
+//                    $declaration = is_array( $css_declaration_library)
+//                        && array_key_exists( $option_value, $css_declaration_library)
+//                        ? $css_declaration_library[ $option_value ]
+//                        : false;
+//
+//                    $declaration = ( false !== $declaration )
+//                        && array_key_exists( "{$declaration_name}:{$option_value}:declaration", $declarations )
+//                        ? $declarations[ "{$declaration_name}:{$option_value}:declaration" ]
+//                        : $declaration;
+//
+////                    var_dump( $css_declaration_library );
+////                    var_dump( $declaration );
+//
+//                    if( !empty ( $declaration ) ){
+//
+//                        // Finally creaate an array  valid css delcarations.
+//                        array_walk( $declaration, function( &$css_value ,$css_property ){
+//                            $css_value = "$css_property:$css_value;";
+//                        } );
+//
+//
+//                        if( array_key_exists( $selector , $css_selectors ) ){
+//                            $css_selectors[ $selector ][] = implode( $declaration ) ;
+//                        }
+//
+//                        if( ! array_key_exists ( $selector , $css_selectors ) ){
+//                            $css_selectors[ $selector ] = array( implode( $declaration ) );
+//                        }
+//                    }
+//                }
+//
+//            }
+//
+////            var_dump( !empty ( $declaration )  );
+//
+////                if( !empty ( $declaration ) ){
+//
+//            array_walk( $css_selectors , function ( &$declaration , $selector  ) {
+//                $declaration =  $selector . '{'. implode( $declaration ) . '}';
+//            });
+//
+//            $shortcode_css = implode( $css_selectors );
 
-            if( ! empty ( $selectors ) ){
-
-                $shortcode_option_value = $this->defaults[ $this->option_name ];
-
-                foreach( $selectors as $handle => $selector ) {
-
-                    // Get the name of the declaraton object.
-                    $declaration_name = explode( ':', $handle )[0]; //var_dump( $declaration_name ) ;
-
-                    // Get the value of the current option.
-                    $option_value = $this->defaults[  $this->option_name ];
-
-                    $css_declaration_library  = $this->css_declaration_lib[ $declaration_name ];
-
-                    // Exclude all except...
-                    if( array_key_exists( "{$declaration_name}:filter", $filters ) ){
-                        $filter = array_flip( $filters["{$declaration_name}:filter" ] );
-                        $css_declaration_library = array_intersect_key( $css_declaration_library , $filter);
-                    }
-
-                    // Include all except...
-                    if( array_key_exists( "{$declaration_name}::filter", $filters ) ){
-                        $filter = array_flip( $filters["{$declaration_name}::filter" ] );
-                        $css_declaration_library = array_diff_key( $css_declaration_library , $filter );
-                    }
-
-                    $declaration = is_array( $css_declaration_library)
-                        && array_key_exists( $option_value, $css_declaration_library)
-                        ? $css_declaration_library[ $option_value ]
-                        : false;
-
-                    $declaration = ( false !== $declaration )
-                        && array_key_exists( "{$declaration_name}:{$option_value}:declaration", $declarations )
-                        ? $declarations[ "{$declaration_name}:{$option_value}:declaration" ]
-                        : $declaration;
-
-                    var_dump( $css_declaration_library );
-                    var_dump( $declaration );
-
-                    if( !empty ( $declaration ) ){
-
-                        // Finally creaate an array  valid css delcarations.
-                        array_walk( $declaration, function( &$css_value ,$css_property ){
-                            $css_value = "$css_property:$css_value;";
-                        } );
-
-
-                        if( array_key_exists( $selector , $css_selectors ) ){
-                            $css_selectors[ $selector ][] = implode( $declaration ) ;
-                        }
-
-                        if( ! array_key_exists ( $selector , $css_selectors ) ){
-                            $css_selectors[ $selector ] = array( implode( $declaration ) );
-                        }
-                    }
-                }
-
-            }
-
-            var_dump( !empty ( $declaration )  );
-
-//                if( !empty ( $declaration ) ){
-
-            array_walk( $css_selectors , function ( &$declaration , $selector  ) {
-                $declaration =  $selector . '{'. implode( $declaration ) . '}';
-            });
-
-            $shortcode_css = implode( $css_selectors );
-
-            var_dump( $shortcode_css );
+            //var_dump( $shortcode_css );
 //                }
         }
 
@@ -363,90 +342,99 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
          *
          * @param   array $declaration_lib   Shortcode css declaration library
 		 */
-		private function apply_configuraton_overrides( $registered_properties, $configured_properties  ) {
+		private function apply_configuraton_overrides( $registered_properties, $property_configuration_objects  ) {
 
             // Apply an any configuration overrides for this shortcode.
-            array_walk( $configured_properties, function( &$config, $property, $properties ){
+            array_walk( $property_configuration_objects, function( &$config, $property_name ){
 
                 // store the name of the current option being evvalutated.
-                $this->option_name = $property;
+                $this->option_name = $property_name;
 
-                // Check and apply any overrides by shortcodes specific to this option.
-                if( array_key_exists( "{$property}:headerbox", $properties ) ){
-                    $config = $properties[ "{$property}:headerbox" ];
-                }
+                $overrides = array_filter( $config, function( $handle ){
+                     return  ( false !== strpos( $handle, "[shortcode]" ) );
 
-                $overrides = array_filter( $config, function( $keys ) {
-                    return  ( false !== strpos( $keys, ']') ) ;
+                }, ARRAY_FILTER_USE_KEY ) ;
 
-                }, ARRAY_FILTER_USE_KEY ); var_dump( $overrides );
+                $config = array_filter( $config, function( $handle ){
+                     return  ( false === strpos( $handle, "[shortcode]" ) );
 
+                }, ARRAY_FILTER_USE_KEY ) ;
 
-                $filters = array_filter( $config, function( $keys ) {
-                    return  ( false !== strpos( $keys, 'filter') ) ;
+                $values = array_values( $overrides );
 
-                }, ARRAY_FILTER_USE_KEY ); //var_dump( $filters );
+                $overrides =  str_replace( "[shortcode]:", '', array_keys( $overrides ) );
 
+                $overrides = array_combine ( $overrides , $values );
 
-                $args = array( $config, $overrides , $filters );
+                $config = array_replace( $config , $overrides );
 
-                array_walk( $config, function( &$setting, $handle, $args ){
+            });
 
-                    $configs    = $args[0];
-                    $overrides  = $args[1];
-                    $filters    = $args[2];
+//            $this->updated_config = array_filter( $config );
+//            var_dump( $registered_properties ) ;
+//            var_dump( $property_configuration_objects ) ;
 
-                    $declaration_name = explode( ':', $handle )[0];
-
-                    $option_value = $this->defaults[ $this->option_name ];
-
-
-                    if( false !== strpos( $handle, ']') ) {
-                       $setting = false;
-                    }
-
-
-
-                    if( ( 'private' !== $configs['type'] ) && array_key_exists( "[shortcode]:{$handle}", $overrides ) ) {
-                       $setting =  $overrides[ "[shortcode]:{$handle}" ];
-                    }
-
-                    if( array_key_exists( "[shortcode]:{$handle}", $filters ) ) {
-                       $setting =  $filters[ "[shortcode]:{$handle}" ];
-                    }
-
-                    if(  array_key_exists( "{$declaration_name}:{$option_value}:selector", $configs ) ) {
-
-                        $setting = ( $handle === "{$declaration_name}:selector" )
-                           ? $configs[ "{$declaration_name}:{$option_value}:selector" ]
-                           : $setting;
-                    }
-
-                    if(  array_key_exists( "[shortcode]:{$declaration_name}:{$option_value}:selector", $configs ) ) {
-
-                        $setting = ( $handle === "{$declaration_name}:selector" )
-                           ? $configs[ "[shortcode]:{$declaration_name}:{$option_value}:selector" ]
-                           : $setting;
-                    }
-
-                    if( ( false !== strpos( $handle, ':selector' ) )  && ( false === strpos( $handle, "{$declaration_name}:selector" ) ) ){
-                            $setting = false;
-                    }
-                }, $args );
-
-                // Updates the configuration of the current property/option.
-                $this->updated_config = array_filter( $config );
-
-            }, $registered_properties ); //var_dump( $this->updated_config );
-
-            // Not really necessary but updates the configuration of the current property/option in the property list.
-            $configured_properties[ $this->option_name ] = $this->updated_config;
-
-            // Again not necessary but for completeness bind the updated property list to the class.
-            $this->configured_properties = $configured_properties;
+            return $property_configuration_objects;
 
         }
 
+        /**
+		 * Initialize and prep configurations for each of the shortcode"s
+         * options and prepare for processing.
+		 *
+		 * @since    1.0.0
+         *
+         * @param   array $declaration_lib   Shortcode css declaration library
+		 */
+		private function apply_declaration_filters( $updated_config ) {
+
+            $css_declaration_library  = $this->css_declaration_lib;
+
+            foreach( $updated_config as $config ){
+
+                $filters = array_filter( $config, function( $keys ) {
+                return ( false !== strpos( $keys, 'filter' ) );
+
+                }, ARRAY_FILTER_USE_KEY );
+
+                if( empty( $filters ) ){
+                    continue;
+                }
+
+                foreach( $filters as $declaration_object_name => $declaration_object_option_keys ){
+
+                    // Remove the identifier.
+                    $is_inclusion_filter = false !== strpos( $declaration_object_name, '::filter' );
+
+                    // Remove the identifier.
+                    $is_exlusion_filter = false !== strpos( $declaration_object_name, ':filter' ) && ! $is_inclusion_filter;
+
+                    // Remove the filter markers.
+                    $declaration_object_name = str_replace( array( '::filter', ':filter',  ), '', $declaration_object_name );
+
+                    // Names matching the keys of declaration object values from the library.
+                    $declaration_object_option_keys = array_flip( $declaration_object_option_keys );
+
+                    // Declaration object values pulled from library based on keys in the filter.
+                    $declaratiion_object_values = $css_declaration_library[ $declaration_object_name ];
+
+                    // Include all except...
+                    $declaratiion_object_values = $is_inclusion_filter
+                        ? array_diff_key( $declaratiion_object_values, $declaration_object_option_keys )
+                        : $declaratiion_object_values;
+
+                    // Exclude all except...
+                    $declaratiion_object_values = $is_exlusion_filter
+                        ? array_intersect_key( $declaratiion_object_values, $declaration_object_option_keys )
+                        : $declaratiion_object_values;
+
+                    // Replaces the object values based on the filter.
+                    $css_declaration_library[ $declaration_object_name ] = $declaratiion_object_values;
+                };
+            };
+
+            return $css_declaration_library;
+        }
 
         /**
 		 * Initialize and prep configurations for each of the shortcode"s

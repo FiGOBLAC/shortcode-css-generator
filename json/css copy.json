@@ -10,11 +10,14 @@
         "[shortcode]:transitions:selector": "selector-shortcode-override->container",
         "[shortcode]:gradient:up:selector": "selector-value-override->imagebox",
         "[shortcode]:transitions:up:selector": "selector-value-override->panelbox",
-        
         "gradient:up:declaration": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
-        "transitions:up:declaration": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))"
-        
+        "transitions:up:declaration": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
+        "[shortcode]:gradient:up:declaration": "border: 1px solid transparent-trans",
+        "[shortcode]:transitions:up:declaration": "border: 1px solid transparent-trans",
+        "gradient:filter": ["left", "right"],
+        "transitions:filter": ["up", "down"]
     },
+
 
     "background-color": "",
     "background-image": "",
