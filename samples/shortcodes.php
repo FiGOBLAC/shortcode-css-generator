@@ -19,6 +19,7 @@ function sample_shortcode( $atts, $content, $shortcode ){
         'shortcode-option5'  =>'testing',
         'shortcode-option6'  =>'testing',
         'shortcode-option7'  =>'testing',
+        'gradient-color'    =>'testing',
         'font-size'         =>'',
         'text-align'        =>'center',
         'padding'           =>'8px',

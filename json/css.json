@@ -2,19 +2,14 @@
 
     "shortcode-option": {
         "type": "custom",
-        "gradient:selector": "selectors->headerbox",
-        "transitions:selector": "selectors->container",
-        "gradient:up:selector": "selector-value-override->headerbox",
-        "transitions:up:selector": "selector-value-override->container",
-        "[shortcode]:gradient:selector": "selector-shortcode-override->headerbox",
-        "[shortcode]:transitions:selector": "selector-shortcode-override->container",
-        "[shortcode]:gradient:up:selector": "selector-value-override->imagebox",
-        "[shortcode]:transitions:up:selector": "selector-value-override->panelbox",
-        "gradient:up:declaration": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
-        "transitions:up:declaration": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
-        "[shortcode]:gradient:up:declaration": "border: 1px solid transparent-trans",
-        "[shortcode]:transitions:up:declaration": "border: 1px solid transparent-trans",
-        "gradient::filter": ["left", "right"],
-        "transitions:filter": ["up", "down"]
+        "gradient:selector": "selectors->selectbox",
+        "gradient:left:selector": "selector-value-overrides->valueover",
+        "gradient:up:selector": "selector-value-overrides->valueover",
+        "[shortcode]:gradient:selector": "selector-shortcode-overrides->shortover",
+        "[shortcode]:gradient:left:selector": " .my-test-selector",
+        "gradient:left:declaration": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
+        "[shortcode]:gradient:left:declaration": "border: 1px solid transparent-trans",
+        "gradient:filter": ["left", "right"]
     }
+
 }

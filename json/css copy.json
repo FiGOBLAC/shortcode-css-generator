@@ -75,5 +75,15 @@
     "headerbox-image": " .headerbox__background-image",
     "headerbox-background": " .headerbox__background",
     "headerbox-font-size": " .headerbox__font-size",
-    "headerbox-header-size": " .headerbox header__font-size"
+    "headerbox-header-size": " .headerbox header__font-size",
+    
+    "shortcode-margin": {
+    "type": "custom:native",
+    "properties": ['margin-left, padding-right'],
+    "selector": "selectors->selectbox",
+    "left:selector": "selector-value-overrides->valueover",
+    "[shortcode]:left:selector": "selector-shortcode-overrides->shortover",
+    "gradient:filter": ["left", "right"]
+        
+    },
 }

@@ -1,31 +1,27 @@
 {
 
     "selectors": {
-        "headerbox": " .headerbox-lib",
-        "panelbox": " .panelbox-lib",
-        "imagebox": " imagebox-lib",
-        "container": " container-lib"
+        "selectbox": " .library-selectbox",
+        "selectbox2": " .library-selectbox2",
+        "selectbox3": " .library-selectbox3"
     },
 
-    "selector-value-override": {
-        "headerbox": " .headerbox-lib-value-or",
-        "panelbox": " .panelbox-lib-value-or",
-        "imagebox": " imagebox-lib-value-or",
-        "container": " container-lib-value-or"
+    "selector-value-overrides": {
+        "valueover": " .library-value-override"
     },
 
-    "selector-shortcode-override": {
-        "headerbox": " .headerbox-lib-shortcode-or",
-        "panelbox": " .panelbox-lib-shortcode-or",
-        "imagebox": " imagebox-lib-shortcode-or",
-        "container": " container-lib-shortcode-or"
+    "selector-shortcode-overrides": {
+        "shortover": " .library-shortcode-override"
     },
 
+
+    "selector-shortcode-value-overrides": {
+        "shortvalueover": " .library-shortcode-value-override"
+    },
 
     "gradient": {
 
         "left": {
-            "gradient-left": "gradient-left",
             "border": "1px solid transparent-trans",
             "-webkit-border-image": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
             "-o-border-image": "-o-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
@@ -35,7 +31,6 @@
         },
 
         "right": {
-            "gradient-right": "gradient-right",
             "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
             "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
             "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
@@ -44,7 +39,6 @@
         },
 
         "up": {
-            "gradient-up": "gradient-up",
             "border": "1px solid transparent",
             "-webkit-border-image": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
             "-o-border-image": "-o-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
@@ -54,7 +48,6 @@
         },
 
         "down": {
-            "gradient-down": "gradient-down",
             "border": "1px solid transparent",
             "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
             "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
@@ -68,12 +61,10 @@
     "transitions": {
 
         "left": {
-            "transition-left": "transition-left",
             "background": "1px solid transparent-trans"
         },
 
         "right": {
-            "transitions-right": "transitions-right",
             "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
             "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
             "-moz-border-image": "-moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color}))",
@@ -82,7 +73,6 @@
         },
 
         "up": {
-            "transitions-up": "transitions-up",
             "border": "1px solid transparent",
             "-webkit-border-image": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
             "-o-border-image": "-o-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
@@ -92,7 +82,6 @@
         },
 
         "down": {
-            "transitions-down": "transitions-down",
             "border": "1px solid transparent",
             "-webkit-border-image": "-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
             "-o-border-image": "-o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color})",
