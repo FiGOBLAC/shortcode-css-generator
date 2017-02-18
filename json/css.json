@@ -1,5 +1,14 @@
 {
 
+    "shortcode-margin": {
+        "type": "custom:native",
+        "properties": ["margin-left", "padding-right"],
+        "selector": "selectors->selectbox",
+        "left:selector": "selector-value-overrides->valueover",
+        "up:selector": "selector-value-overrides->valueover",
+        "[shortcode]:left:selector": "selector-shortcode-overrides->shortover"
+    },
+
     "shortcode-option": {
         "type": "custom",
         "gradient:selector": "selectors->selectbox",
@@ -11,5 +20,4 @@
         "[shortcode]:gradient:left:declaration": "border: 1px solid transparent-trans",
         "gradient:filter": ["left", "right"]
     }
-
 }

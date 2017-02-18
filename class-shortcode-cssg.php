@@ -101,6 +101,8 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 
 			$this->set_file_paths( $identity );
 			$this->load_configurations();
+			$this->load_registered_properties();
+			$this->load_css_declaration_library();
 			$this->init_stylesheet_generator();
 			$this->init_filesystem_proxy();
 
@@ -138,6 +140,20 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			$this->scssg_dir = $identity['scssg_dir'];
 		}
 
+
+        /**
+		 * Initialize filesystem proxy function.
+		 *
+		 * @since    1.0.0
+		 */
+		private function init_filesystem_proxy() {
+
+			require_once $this->scssg_dir . 'class-shortcode-cssg-filesystem.php';
+
+			$this->filesystem = Shortcode_CSSG_Filesystem::get_instance();
+		}
+
+
 		/**
 		 * Loads the configuration file.
 		 *
@@ -148,6 +164,51 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			$configs = file_get_contents( $this->scssg_dir . 'json/configs.json' );
 
 			$this->configs = json_decode( $configs, TRUE );
+
+		}
+
+
+        /**
+		 * Initializes stylesheet generator based on configuration.
+		 *
+		 * @since    1.0.0
+		 */
+		private function init_stylesheet_generator() {
+
+            $config = $this->configs['generate-css-stylesheet'];
+
+            $this->generate_stylesheet = ( ! empty( $config ) ) ? $config : false;
+
+		}
+
+		/**
+		 * Loads all registered css propereties.
+		 *
+		 * @since    1.0.0
+		 */
+		private function load_registered_properties() {
+
+			$registered_properties = file_get_contents( $this->scssg_dir . 'json/css.json' );
+
+			$this->registered_properties = json_decode( $registered_properties, true );
+
+		}
+
+		/**
+		 * Loads all registered css propereties.
+		 *
+		 * @since    1.0.0
+		 */
+		private function load_css_declaration_library() {
+
+            // Main css declaration library filename.
+            $css_declaration_file = $this->scssg_dir . $this->configs['css_lib_path'] . "css.lib.json";
+
+            // Load the main css declaration library file
+			$css_declaration_library = file_get_contents( $css_declaration_file );
+
+            // Working with them as arrays.
+			$this->css_declaration_library = json_decode( $css_declaration_library, true );
 
 		}
 
@@ -170,32 +231,23 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 			// Sir, Maam... I need to see some id.
 			$this->shortcode_id = '#' . $this->defaults['id'];
 
-            // Get the pre regestered properties.
-			$registered_properties = file_get_contents( $this->scssg_dir . 'json/css.json' );
-
-            // Working with them as arrays.
-			$registered_properties = json_decode( $registered_properties, true );
-
             // Load only the options that have values set for them.
-            $active_properties = array_filter( array_intersect_key( $registered_properties, $this->defaults ) );
+            $active_properties = array_filter( array_intersect_key( $this->registered_properties, $this->defaults ) );
 
-            // Main css declaration filename.
-            $css_declaration_file = $this->scssg_dir . $this->configs['css_lib_path'] . "css.lib.json";
-
-            // Shortcode code declaration filename.
+            // Shortcode code declaration library filename.
             $shortcode_declaration_file = $this->scssg_dir . $this->configs['css_lib_path'] . "{$shortcode}.lib.json" ;
 
-            // Load the declaration library.
-			$css_declaration_file = file_exists( $shortcode_declaration_file ) ? $shortcode_declaration_file : $css_declaration_file;
+            // Load shortcode specific css declaration library.
+			if( file_exists( $shortcode_declaration_file ) ){
 
-            // Load the declaration library file
-			$css_declaration_library = file_get_contents( $css_declaration_file );
+                $shortcode_css_declaration_library  = file_get_contents( $shortcode_declaration_file );
 
-            // Working with them as arrays.
-			$this->css_declaration_library = json_decode( $css_declaration_library, true );
+                $this->css_declaration_library      = json_decode( $shortcode_css_declaration_library, true );
+
+            }
 
             // Pre registered css properties for processing.
-			$this->process_css_property_configurations( $registered_properties, $active_properties );
+			$this->process_css_property_configurations( $this->registered_properties, $active_properties );
 
 		}
 
@@ -211,30 +263,69 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 */
 		private function process_css_property_configurations( $registered_properties, $active_properties ) {
 
-            // Separate out all the properties that have special configurations.
-            $property_configuration_strings = array_filter( $active_properties, function( $property ){
-                return is_string( $property );
-            } );
+            // Array of native css properties ( i.e. margin );
+            $native_css_properties = array_filter( $active_properties, function( &$configuration, $property ){
+                return $this->is_valid_property_type( $property, $configuration, 'native-property' );
+            }, ARRAY_FILTER_USE_BOTH );
 
-            // Separate out all the properties tha have been configured via object.
-            $property_configuration_objects = array_filter( $active_properties, function( $property ){
-                return is_array( $property );
-            } );
+            // Array of custom css properties ( i.e. custom-name:margin );
+            $custom_css_properties = array_filter( $active_properties, function( &$configuration, $property ){
+                return $this->is_valid_property_type( $property, $configuration, 'custom-property' );
+            }, ARRAY_FILTER_USE_BOTH );
 
+           // Array of custom css properties ( i.e. custom-name{} );
+            $custom_css_propertiey_objects = array_filter( $active_properties, function( &$configuration, $property ){
+                return $this->is_valid_property_type( $property, $configuration, 'custom-property-object' );
+            }, ARRAY_FILTER_USE_BOTH );
 
-            if( ! empty( $property_configuration_objects ) ) {
+           // Array of custom css properties ( i.e. custom-name{} );
+            $custom_css_propertiey_group = array_filter( $active_properties, function( &$configuration, $property ){
+                return $this->is_valid_property_type( $property, $configuration, 'custom-property-group' );
+            }, ARRAY_FILTER_USE_BOTH );
+
+            if( ! empty( $custom_css_propertiey_objects ) ) {
 
                 // Checks for and applies option configuration overrides.
-                $property_configuration_objects = $this->apply_configuraton_overrides( $property_configuration_objects );
+                $custom_css_propertiey_objects = $this->apply_configuraton_overrides( $custom_css_propertiey_objects );
 
                 // Checks for and applies option configuration  filters for css declarations
-                $this->apply_declaration_filters( $property_configuration_objects );
+                $custom_css_propertiey_objects = $this->apply_declaration_filters( $custom_css_propertiey_objects );
 
                 // Apply all css declaration filters set within the configuration.
-                $this->build_shortocde_css( $property_configuration_objects );
+                $this->build_shortcode_css( $custom_css_propertiey_objects );
 
             }
         }
+
+        /**
+		 * Initialize and prep configurations for each of the shortcode"s
+         * options and prepare for processing.
+		 *
+		 * @since    1.0.0
+         *
+         * @param   array $declaration_lib   Shortcode css declaration library
+		 */
+		private function is_valid_property_type( $property = '', $configuration, $exptected_type ) {
+
+            switch( $exptected_type ){
+
+                case 'native-property':
+                    $is_valid = ( is_string( $configuration ) && ( false === strpos( $property, ':' ) ) );
+                    break;
+
+                case 'custom-property':
+                    $is_valid = ( is_string( $configuration ) && ( false !== strpos( $property, ':' ) ) );
+                    break;
+
+                case 'custom-property-object':
+                    $is_valid = isset( $configuration['type'] ) && ( false !== strpos( $configuration['type'], 'custom' ) );
+                    break;
+
+                default: $is_valid = false;
+            }
+
+            return $is_valid;
+		}
 
    		/**
 		 * Convert shortcode style settings into css properties.
@@ -263,15 +354,16 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 * @param   array $defaults        An array of shortcode attributes
 		 * @return  string                           Valid css declarations.
 		 */
-		private function apply_configuraton_overrides( $property_configuration_objects ) {
+		private function apply_configuraton_overrides( $custom_css_propertiey_objects ) {
 
             // Apply an any configuration overrides for this shortcode.
-            array_walk( $property_configuration_objects, function( &$config, $property_name ){
+            array_walk( $custom_css_propertiey_objects, function( &$config, $property_name ){
 
-                // store the name of the current option being evvalutated.
-                $this->option_name = $property_name;
+                // Merge in user entered property value.
+                $config['user_value'] = $this->defaults[ $property_name ];
 
-                $option_value = $this->defaults[ $this->option_name ];
+                // Get the value set by the user for this property/option.
+                $property_value = $config['user_value'];
 
                 // Removes the shortcode marker from  the overrides lists.
                 $shortcode_overrides =  str_replace( "[shortcode]:", '', array_keys( $config ) );
@@ -280,21 +372,26 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
                 $shortcode_overrides = array_combine ( $shortcode_overrides , $config );
 
                 // Removes the shortcode marker from  the overrides lists.
-                $selector_overrides =  str_replace( "{$option_value}:selector", 'selector', array_keys( $shortcode_overrides ) );
+                $selector_overrides =  str_replace( "{$property_value}:selector", 'selector', array_keys( $shortcode_overrides ) );
 
                 // Removes the shortcode marker from  the overrides lists.
-                $selector_overrides =  str_replace( "{$option_value}:declaration", 'declaration', $selector_overrides );
+                $selector_overrides =  str_replace( "{$property_value}:declaration", 'declaration', $selector_overrides );
+
+                // Removes the shortcode marker from  the overrides lists.
+                $selector_overrides = ( 'custom:native' === $config['type'] )
+                    ? str_replace( ":selector", '::', $selector_overrides )
+                    : $selector_overrides;
 
                 // A list of the overrides with out the shortode markers.
                 $overrides = array_combine ( $selector_overrides , $shortcode_overrides );
 
-                $config = array_filter( $overrides, function( $key ){
-                    return ( substr_count( $key, ':' )  !== 2 ) || ( false !== strpos( $key, 'filter' ) );
-                }, ARRAY_FILTER_USE_KEY );
+                $config = array_filter( $overrides, function( $key, $value ){
+                    return ( substr_count( $value, ':' )  !== 2 ) || ( false !== strpos( $value, 'filter' ) );
+                }, ARRAY_FILTER_USE_BOTH );
 
             });
 
-          return $property_configuration_objects;
+          return $custom_css_propertiey_objects;
         }
 
  		/**
@@ -309,11 +406,11 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 * @param   array $defaults        An array of shortcode attributes
 		 * @return  string                           Valid css declarations.
 		 */
-		private function apply_declaration_filters( $property_configuration_objects ) {
+		private function apply_declaration_filters( $custom_css_propertiey_objects ) {
 
-            $css_declaration_library  = $this->css_declaration_library;
+            foreach( $custom_css_propertiey_objects as $property_name => $property_configuration ){
 
-            foreach( $property_configuration_objects as $property_configuration ){
+                $css_declaration_library  = $this->css_declaration_library;
 
                 $filters = array_filter( $property_configuration, function( $configuration_key ) {
                     return ( false !== strpos( $configuration_key, 'filter' ) );
@@ -321,7 +418,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 
                 if( ! empty( $filters ) ){
 
-                    foreach( $filters as $declaration_object_name => $declaration_object_option_keys ){
+                    foreach( $filters as $declaration_object_name => $declaration_filter_values ){
 
                         // Remove the identifier.
                         $is_inclusion_filter = false !== strpos( $declaration_object_name, '::filter' );
@@ -333,28 +430,47 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
                         $declaration_object_name = str_replace( array( '::filter', ':filter',  ), '', $declaration_object_name );
 
                         // Names matching the keys of declaration object values from the library.
-                        $declaration_object_option_keys = array_flip( $declaration_object_option_keys );
+                        $declaration_filter_values = array_flip( $declaration_filter_values );
 
-                        // Declaration object values pulled from library based on keys in the filter.
-                        $declaratiion_object_values = $css_declaration_library[ $declaration_object_name ];
+                        if( isset ( $css_declaration_library[ $declaration_object_name ] ) ) {
 
-                        // Include all except...
-                        $declaratiion_object_values = $is_inclusion_filter
-                            ? array_diff_key( $declaratiion_object_values, $declaration_object_option_keys )
-                            : $declaratiion_object_values;
+                            // Declaration object values pulled from library based on keys in the filter.
+                            $declaratiion_object_values = $css_declaration_library[ $declaration_object_name ];
 
-                        // Exclude all except...
-                        $declaratiion_object_values = $is_exlusion_filter
-                            ? array_intersect_key( $declaratiion_object_values, $declaration_object_option_keys )
-                            : $declaratiion_object_values;
+                            // Include all except...
+                            $declaratiion_object_values = $is_inclusion_filter
+                                ? array_diff_key( $declaratiion_object_values, $declaration_filter_values )
+                                : $declaratiion_object_values;
 
-                        // Replaces the object values based on the filter.
-                        $css_declaration_library[ $declaration_object_name ] = $declaratiion_object_values;
-                    };
+                            // Exclude all except...
+                            $declaratiion_object_values = $is_exlusion_filter
+                                ? array_intersect_key( $declaratiion_object_values, $declaration_filter_values )
+                                : $declaratiion_object_values;
+
+                            // Replaces the object values based on the filter.
+                            $css_declaration_library[ $declaration_object_name ] = $declaratiion_object_values;
+
+                        }
+                    }
                 }
+
+                if( ( 'custom:native' === $property_configuration['type'] ) && is_string ( $property_configuration['properties'] ) ){
+                    $properties = array( trim( $property_configuration['properties'] ) );
+                    $css_declaration_library = array_fill_keys( $properties, $property_configuration['user_value'] );
+                }
+
+                if( ( 'custom:native' === $property_configuration['type'] ) && is_array ( $property_configuration['properties'] ) ){
+                    $css_declaration_library = array_fill_keys( $property_configuration['properties'], $property_configuration['user_value'] );
+                }
+
+                // Add the declartion library to the configuration's array.
+                $property_configuration['css_library'] = $css_declaration_library;
+
+                // Merge/replace the main configuration.
+                $custom_css_propertiey_objects[ $property_name ] = $property_configuration;
             }
 
-            $this->css_declaration_library = $css_declaration_library;
+            return $custom_css_propertiey_objects;
         }
 
 		/**
@@ -369,11 +485,11 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 * @param   array $defaults        An array of shortcode attributes
 		 * @return  string                           Valid css declarations.
 		 */
-		private function build_shortocde_css( $property_configuration_objects ) {
+		private function build_shortcode_css( $custom_css_propertiey_objects ) {
 
             $shortcode_css = [];
 
-            foreach( $property_configuration_objects as $property_name => $configuration ){
+            foreach( $custom_css_propertiey_objects as $property_name => $configuration ){
 
                 // Round up the selectors.
                 $selectors = array_filter( $configuration, function( $handle ) {
@@ -395,24 +511,45 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
                         $selector_object    = $parts[0];
                         $selector_value     = $parts[1];
 
-                        $css_selector = isset( $this->css_declaration_library[ $selector_object ][ $selector_value ] )
-                            ? $this->css_declaration_library[ $selector_object ][ $selector_value ]
+                        $css_selector = isset( $configuration['css_library'][ $selector_object ][ $selector_value ] )
+                            ? $configuration['css_library'] [ $selector_object ][ $selector_value ]
                             : $css_selector;
 
                        endif;
+
+                        // Create a private declaration name so we can check for its existence.
+                        $private_declaration_name = str_replace( ':selector', ":declaration", $declaration_object_name );
+
+                        // Name of the declaration object used by this property.
+                        $declaration_object_name = str_replace( array( ':selector' ), '', $declaration_object_name );
+
+                        // Pass in the configuration 's property name.
+                        $configuration['property_name'] = $property_name;
+
+                        // Assing the correct css declaration type.
+                        if( ! empty ( $private_declarations ) && ! isset( $configuration['properties'] ) ){
+                            $configuration['css_library'] = $private_declarations[ $private_declaration_name ];
+                        }
+
+                        // Assing the correct css declaration type.
+//                        if( ! empty ( $private_declarations ) && ! isset( $configuration['properties'] ) ){
+                            $configuration['declaration_object'] = $declaration_object_name;
+//                        }
 
                         // replace flags with shortcode id.
                         $css_selector =  $this->shortcode_id . str_replace( '$', $this->shortcode_id, $css_selector );
 
                         // Build the css declartion for the current selector.
-                        $css_declaration = $this->build_css_declaration( $property_name, $declaration_object_name, $private_declarations );
+                        $css_declaration = $this->build_css_declaration( $configuration );
+
+                        var_dump( $css_declaration );
 
                         if( ! ( $css_selector &&  $css_declaration ) ){
                             continue;
                         }
 
                         $css_declaration = is_array( $css_declaration ) ? implode( $css_declaration ) : $css_declaration;
-//
+
                         if( array_key_exists( $css_selector , $shortcode_css ) ){
                             $shortcode_css[ $css_selector ][] = $css_declaration;
                         }
@@ -432,8 +569,6 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 
                 $this->styles[ $this->caller ] = implode( $shortcode_css );
             }
-
-            var_dump( $this->styles[ $this->caller ] );
         }
 
 		/**
@@ -450,99 +585,58 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		 * @param   array $shortcode_css             Shortcode css => value pairs
 		 * @return  string                           Valid css declarations.
 		 */
-		private function build_css_declaration( $property_name, $declaration_object_name, $private_declarations ) {
+		private function build_css_declaration( $property_configs ) {
 
-            // Value set by the user.
-            $shortcode_option_value = $this->defaults[ $property_name ];
+            $css_declaration = $property_configs['css_library'];
 
-            // Create a private declaration name so we can check for its existence.
-            $private_declaration_name = str_replace( ':selector', ":declaration", $declaration_object_name );
+            if( ('custom' === $property_configs['type' ] ) && ! is_string( $property_configs['css_library'] ) ) {
 
-            // Get the name of the declaration object.
-            $declaration_object_name = str_replace( array( ':selector' ), '', $declaration_object_name );
+                // Value set by the user.
+                $shortcode_option_value = $property_configs['user_value'];
 
-            // If a private declaration exists get the css declaration value.
-            $private_declaration = array_key_exists( $private_declaration_name, $private_declarations )
-                ? $private_declarations[ $private_declaration_name ]
-                : false;
+                // Get the name of the declaration object.
+                $declaration_object_name = $property_configs['declaration_object'];
 
-            // Go and get the css declaration from the library.
-            $css_declaration = ( false === $private_declaration )
+                // Go and get the css declaration from the library.
+                $css_declaration = isset( $property_configs['css_library'][ $declaration_object_name ][ $shortcode_option_value ] )
+                    ? $property_configs['css_library'][ $declaration_object_name ][ $shortcode_option_value ]
+                    : array();
 
-                && array_key_exists( $declaration_object_name, $this->css_declaration_library )
+                 // Get any flags that were placed in the user selelcted declaration.
+                $flag = ! empty( $css_declaration )
+                    ? $this->extract_search_flag( implode( $css_declaration ) )
+                    : false;
 
-                && is_array( $this->css_declaration_library[ $declaration_object_name ] )
+                // Strip the braces from the given flag to get the name of our secondary_option.
+                $secondary_option = ( false !== $flag ) ? str_replace( array( '{','}' ), '', $flag ) : false;
 
-                && array_key_exists( $shortcode_option_value, $this->css_declaration_library[ $declaration_object_name ] )
+                // Check to see if the secondary option is being used in the shortcode defaults.
+                $secondary_option_active = ( false !== $secondary_option ) && array_key_exists( $secondary_option, $this->defaults );
 
-                ?  $this->css_declaration_library[ $declaration_object_name ][ $shortcode_option_value ]
-
-                : $private_declaration;
-
-            if( $css_declaration && ! is_string( $css_declaration ) ) {
-
-                // Get any flags that were placed in the user selelcted declaration.
-               $flag =  $this->extract_search_flag( implode( $css_declaration ) );
-
-               // Strip the braces from the given flag to get the name of our secondary_option.
-               $secondary_option = ( false !== $flag ) ? str_replace( array( '{','}' ), '', $flag ) : false;
-
-               // Check to see if the secondary option is being used in the shortcode defaults.
-               $secondary_option_active = ( false !== $secondary_option ) && array_key_exists( $secondary_option, $this->defaults );
-
-               // Convert search flags into values from shortcode defaults.
-               if( $secondary_option_active ) {
+                // Convert search flags into values from shortcode defaults.
+                if( $secondary_option_active ) {
                     array_walk( $css_declaration, array( $this, 'search_and_replace_flags' ) );
                 }
 
                 // Finally creaate an array valid css delcarations.
-               if( $secondary_option && ! $secondary_option_active ) {
-                   return;
-               }
+                if( $secondary_option && ! $secondary_option_active ) {
+                    return;
+                }
+
+            }
+
+            if( ! empty( $css_declaration ) && is_array( $css_declaration  ) ){
 
                 array_walk( $css_declaration, function( &$css_value ,$css_property ){
                     $css_value = "$css_property:$css_value;";
-                } );
+                });
+
+              $css_declaration = implode( $css_declaration );
+
             }
 
             return ( ! empty( $css_declaration ) ) ? $css_declaration : false;
         }
-
-        /**
-		 * Initialize and prep configurations for each of the shortcode"s
-         * options and prepare for processing.
-		 *
-		 * @since    1.0.0
-         *
-         * @param   array $declaration_lib   Shortcode css declaration library
-		 */
-		private function is_valid_css_property( $configuration ) {
-		}
-
-        /**
-		 * Initialize filesystem proxy function.
-		 *
-		 * @since    1.0.0
-		 */
-		private function init_filesystem_proxy() {
-
-			require_once $this->scssg_dir . 'class-shortcode-cssg-filesystem.php';
-
-			$this->filesystem = Shortcode_CSSG_Filesystem::get_instance();
-		}
-
-		/**
-		 * Initializes stylesheet generator based on configuration.
-		 *
-		 * @since    1.0.0
-		 */
-		private function init_stylesheet_generator() {
-
-            $config = $this->configs['generate-css-stylesheet'];
-
-            $this->generate_stylesheet = ( ! empty( $config ) ) ? $config : false;
-
-		}
 
 	   /**
 		* Strips  and extracts the flag placed within a given string.
