@@ -1,7 +1,7 @@
 {
 
     "selectors": {
-        "selectbox": " .library-selectbox",
+        "selectbox": " .library-selectbox $.library-selectbox",
         "selectbox2": " .library-selectbox2",
         "selectbox3": " .library-selectbox3"
     },
@@ -22,7 +22,7 @@
     "gradient": {
 
         "left": {
-            "border": "1px solid transparent-trans",
+            "border": "1px solid transparent-gradi",
             "-webkit-border-image": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
             "-o-border-image": "-o-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
             "-moz-border-image": "-moz-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))",

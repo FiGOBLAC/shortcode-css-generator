@@ -2,9 +2,9 @@
 
 add_shortcode( 'sample_shortcode', 'sample_shortcode');
 add_shortcode( 'sample_shortcode2', 'sample_shortcode2');
-add_shortcode( 'sample_shortcode3', 'sample_shortcode3');
-add_shortcode( 'sample_shortcode4', 'sample_shortcode4');
-add_shortcode( 'sample_shortcode5', 'sample_shortcode5');
+//add_shortcode( 'sample_shortcode3', 'sample_shortcode3');
+//add_shortcode( 'sample_shortcode4', 'sample_shortcode4');
+//add_shortcode( 'sample_shortcode5', 'sample_shortcode5');
 
 function sample_shortcode( $atts, $content, $shortcode ){
 
@@ -13,7 +13,9 @@ function sample_shortcode( $atts, $content, $shortcode ){
         'id'                =>'shortcode-1',
         'class'             =>'shortcode-1',
         'shortcode-option'  =>'left',
-        'shortcode-margin'  =>'left',
+        'shortcode-option2'  =>'left',
+        'shortcode-margin'  =>'20px',
+        'shortcode-margin2'  =>'40px',
         'shortcode-height'  =>'100px',
         'gradient-color'    =>'#123762',
         'font-size'         =>'',
@@ -21,6 +23,7 @@ function sample_shortcode( $atts, $content, $shortcode ){
         'padding'           =>'8px',
         'color'             =>'white',
         'background-color'  =>'#004b6b',
+        'margin-left'       =>'75px',
     );
 
     $defaults = shortcode_atts( $defaults, $atts , $shortcode );
