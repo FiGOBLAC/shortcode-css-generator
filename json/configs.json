@@ -2,5 +2,6 @@
     "css_file_name" : "shortcodes.css",
     "css_file_path" : "shortcode-cssg/css/",
     "css_lib_path"  : "json/",
-    "generate-css-stylesheet" : true
+    "generate_css_stylesheet" : true,
+    "total_shortcodes" : 2
 }

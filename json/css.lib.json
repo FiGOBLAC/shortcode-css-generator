@@ -22,7 +22,10 @@
     "gradient": {
 
         "left": {
-            "border": "1px solid transparent-gradi",
+            "border": "1px solid",
+            "border~": "1px solid",
+            "border~~": "1px solid",
+            "border~~~": "1px solid",
             "-webkit-border-image": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
             "-o-border-image": "-o-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
             "-moz-border-image": "-moz-linear-gradient(left, {gradient-color}, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))",
@@ -61,7 +64,7 @@
     "transitions": {
 
         "left": {
-            "background": "1px solid transparent-trans"
+            "background": "1px solid"
         },
 
         "right": {

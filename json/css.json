@@ -11,7 +11,7 @@
         "selector2": "selectors->selectbox2",
         "left:selector": "selector-value-overrides->valueover",
         "up:selector": "selector-value-overrides->valueover",
-        "[shortcode]:left:selector": "selector-shortcode-overrides->shortover"
+        "[sample_shortcode]:left:selector": "selector-shortcode-overrides->shortover"
     },
 
     "shortcode-margin2": {
@@ -20,7 +20,7 @@
         "selector": "selectors->selectbox",
         "left:selector": "selector-value-overrides->valueover",
         "up:selector": "selector-value-overrides->valueover",
-        "[shortcode]:left:selector": "selector-shortcode-overrides->shortover"
+        "[sample_shortcode]:left:selector": "selector-shortcode-overrides->shortover"
     },
 
     "shortcode-option": {
@@ -29,11 +29,17 @@
         "transitions:selector": "selectors->selectbox",
         "gradient:left:selector": "selector-value-overrides->valueover",
         "gradient:up:selector": "selector-value-overrides->valueover",
-        "[shortcode]:gradient:selector": "selector-shortcode-overrides->shortover",
-        "[shortcode]:gradient:left:selector": " .my-test-selector",
-        "gradient:left:declaration": "-webkit-linear-gradient(left, {gradient-color},rgba(0, 0, 0, 0),  rgba(0, 0, 0, 0))",
-        "[shortcode]:gradient:left:declaration": "border: 1px solid transparent-trans",
+        "[sample_shortcode]:gradient:selector": "selector-shortcode-overrides->shortover",
+        "[sample_shortcode]:gradient:left:selector": " .my-test-selector",
+        "gradient:left:declaration":  "-webkit-border-image:-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color});",
+        "[sample_shortcode]:gradient:left:declaration": "border: 1px solid transparent-trans",
         "gradient:filter": ["left", "right"]
+    },
+
+    "shortcode-option::sample_shortcode": {
+        "type": "custom",
+        "animations:selector": "selectors->selectbox"
+
     },
 
     "shortcode-option2": {
@@ -44,8 +50,8 @@
         "transitions:selector": "selectors->selectbox",
         "gradient:left:selector": "selector-value-overrides->valueover",
         "gradient:up:selector": "selector-value-overrides->valueover",
-        "[shortcode]:gradient:selector": "selector-shortcode-overrides->shortover",
-        "[shortcode]:gradient:left:selector": " .my-test-selector",
+        "[sample_shortcode]:gradient:selector": "selector-shortcode-overrides->shortover",
+        "[sample_shortcode]:gradient:left:selector": " .my-test-selector",
 
         "gradient:filter": ["left", "right"]
     }

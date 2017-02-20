@@ -1,0 +1,57 @@
+#shortcode-1 .myheight #shortcode-1.my-id {
+    height: 100px;
+}
+
+#shortcode-1 .mybackground #shortcode-1.my-id {
+    background-color: #004b6b;
+    margin-left: 75px;
+}
+
+#shortcode-1 .library-selectbox #shortcode-1.library-selectbox {
+    margin-left: 20px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background: 1px solid;
+    border: 1px solid;
+    border: 1px solid;
+    border: 1px solid;
+    border: 1px solid;
+    -webkit-border-image: -webkit-linear-gradient(left, #123762, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    -o-border-image: -o-linear-gradient(left, #123762, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    -moz-border-image: -moz-linear-gradient(left, #123762, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    -ms-border-image: -ms-linear-gradient(left, rgba(0, 0, 0, 0), #123762, rgba(0, 0, 0, 0));
+    border-image-slice: 1;
+    border: 1px solid;
+    border: 1px solid;
+    border: 1px solid;
+    border: 1px solid;
+    -webkit-border-image: -webkit-linear-gradient(left, #123762, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    -o-border-image: -o-linear-gradient(left, #123762, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    -moz-border-image: -moz-linear-gradient(left, #123762, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    -ms-border-image: -ms-linear-gradient(left, rgba(0, 0, 0, 0), #123762, rgba(0, 0, 0, 0));
+    border-image-slice: 1;
+    background: 1px solid;
+}
+
+#shortcode-1 .library-selectbox2 {
+    margin-left: 20px;
+}
+
+#shortcode-1 .library-shortcode-override {
+    margin-left: 20px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+#shortcode-1 .library-value-override {
+    -webkit-border-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), #123762);
+    border: 1px solid;
+    border: 1px solid;
+    border: 1px solid;
+    border: 1px solid;
+    -webkit-border-image: -webkit-linear-gradient(left, #123762, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    -o-border-image: -o-linear-gradient(left, #123762, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    -moz-border-image: -moz-linear-gradient(left, #123762, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    -ms-border-image: -ms-linear-gradient(left, rgba(0, 0, 0, 0), #123762, rgba(0, 0, 0, 0));
+    border-image-slice: 1;
+}
