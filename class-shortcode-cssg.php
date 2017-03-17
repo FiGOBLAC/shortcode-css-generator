@@ -310,7 +310,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 		}
 
 		/**
-		 * Call back that Searches for and replaces flags with the resulting
+		 * Callback that Searches for and replaces flags with the resulting
 		 * value of a shorcode's attribute.
 		 *
 		 * This function is a callback used to extract the name of a shortcode
@@ -464,7 +464,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
             $property_value = $configuration['user_value'];
 
             // Does this configuration has a css library assigned?
-            $css_lib = isset( $configuration['css_library'] ) ?$configuration['css_library'] : false ;
+            $css_lib = isset( $configuration['css_library'] ) ? $configuration['css_library'] : false ;
 
             // Get the value set by the user for this property/option.
             $properties = $this->registered_properties;
