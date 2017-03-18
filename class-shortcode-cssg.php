@@ -792,7 +792,7 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
 
             foreach( $shortcode_css as $css_selector => $css_declaration ) {
 
-                $css_selector       = str_replace( ':', '', strstr( $css_selector, '::' ) );
+                $css_selector       = str_replace( array('::#', '::.'), array('#', '.'), strstr( $css_selector, '::' ) );
                 $css_declaration    = str_replace( '~', '', $css_declaration );
 
                 if( array_key_exists( $css_selector , $this->shortcode_css ) ){
@@ -871,4 +871,3 @@ if( ! class_exists( 'Shortcode_CSSG' ) ) {
             }
 		}
 	}
-}

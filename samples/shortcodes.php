@@ -39,14 +39,14 @@ function sample_shortcode2( $atts, $content, $shortcode ){
 
     $defaults = array(
 
-        'id'				=>'shortcode-2',
-        'class'				=>'shortcode-2',
-        'header'			=>'Hover Me.... I\'m Going In!',
-        'min-height'		=>'300px',
-        'line-height'		=>'34px',
-        'text-align'        =>'center',
-        'padding'           =>'8px',
-        'border'  			=>'1px solid lightgrey',
+        'id'				=> 'shortcode-2',
+        'class'				=> 'shortcode-2',
+        'header'			=> 'Hover Me.... I\'m Going In!',
+        'min-height'		=> '300px',
+        'line-height'		=> '34px',
+        'text-align'        => 'center',
+        'padding'           => '8px',
+        'border'  			=> '1px solid lightgrey',
 		// custom css properties.
         'headerbox-header-size'	=> '34px',
         'headerbox-font-size'	=> '18px',
@@ -63,7 +63,8 @@ function sample_shortcode2( $atts, $content, $shortcode ){
 
     shortcode_cssg( $shortcode, $defaults );
 
-   return "<div id='$id' class='$class'><div class='headerbox gradient'><header>$header</header></div>$content</div>";
+	return "<div id='{$id}' class='promo-box{$class}'><div class='headerbox'><header><h2>{$header}</h2></header></div><div class='content-box'>{$content}</div></div>";
+
 }
 
 function sample_shortcode3( $atts, $content, $shortcode ){
@@ -95,7 +96,7 @@ function sample_shortcode3( $atts, $content, $shortcode ){
 
     shortcode_cssg( $shortcode, $defaults );
 
-    return "<div id='$id' class='$class'><div class='headerbox gradient'><header>$header</header><p>$subheader</p></div>$content</div>";
+    return "<div id='$id' class='$class'><div class='headerbox gradient'><header><h2>$header</h2></header><p>$subheader</p></div>$content</div>";
 }
 
 function sample_shortcode4( $atts, $content, $shortcode ){

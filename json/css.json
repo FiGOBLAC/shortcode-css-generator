@@ -1,58 +1,59 @@
 {
 
-    "shortcode-height:height":" .myheight $.my-id",
-    "background-color":" .mybackground $.my-id",
-    "margin-left":" .mybackground $.my-id",
+	"background": "",
+	"background-color": "",
+	"background-opacity": "",
+	"background-image": "",
+	"background-size": "",
+	"background-repeat": "no_repeat",
+	"background-attachment": "",
+	"background-position": "",
+	"margin": "",
+	"margin-top": "",
+	"margin-bottom": "",
+	"margin-left": "",
+	"margin-right": "",
+	"padding": "",
+	"padding-top": "",
+	"padding-bottom": "",
+	"padding-left": "",
+	"padding-right": "",
+	"border": "",
+	"borde-left": "",
+	"border-right": "",
+	"border-top": "",
+	"border-bottom": "",
+	"border-color": "",
+	"border-shadow": "",
+	"border-radius": "",
+	"border-image": "",
+	"border-image_slice": "",
+	"-webkit-border-image": "",
+	"-moz-border-image": "",
+	"-o-border-image": "",
+	"-ms-border-image": "",
+	"overflow": "",
+	"min-height": "",
+	"line-height": "",
+	"height": "",
+	"width": "",
+	"max-width": "",
+	"display": "",
+	"vertical-align": "",
+	"color": "",
+	"font-style": "",
+	"font-family": "",
+	"font-size": "",
+	"line_height": "",
+	"color": "",
+	"text-align": "",
+	"opacity": "",
+	"cursor": "",
+	"headerbox-background:background": " .headerbox",
+	"headerbox-font-size:font-size" : " .headerbox",
+	"headerbox-margin:margin" : " .headerbox",
+	"headerbox-padding:padding" : " .headerbox",
+	"headerbox-color:color" : " .headerbox",
+	"headerbox-hover:color" : " .headerbox h2:hover",
 
-    "shortcode-margin": {
-        "type": "custom:native",
-        "properties": "margin-left",
-        "selector": "selectors->selectbox",
-        "selector2": "selectors->selectbox2",
-        "left:selector": "selector-value-overrides->valueover",
-        "up:selector": "selector-value-overrides->valueover",
-        "[sample_shortcode]:left:selector": "selector-shortcode-overrides->shortover"
-    },
-
-    "shortcode-margin2": {
-        "type": "custom:native",
-        "properties": ["padding-top", "padding-bottom"],
-        "selector": "selectors->selectbox",
-        "left:selector": "selector-value-overrides->valueover",
-        "up:selector": "selector-value-overrides->valueover",
-        "[sample_shortcode]:left:selector": "selector-shortcode-overrides->shortover"
-    },
-
-    "shortcode-option": {
-        "type": "custom",
-        "gradient:selector": "selectors->selectbox",
-        "transitions:selector": "selectors->selectbox",
-        "gradient:left:selector": "selector-value-overrides->valueover",
-        "gradient:up:selector": "selector-value-overrides->valueover",
-        "[sample_shortcode]:gradient:selector": "selector-shortcode-overrides->shortover",
-        "[sample_shortcode]:gradient:left:selector": " .my-test-selector",
-        "gradient:left:declaration":  "-webkit-border-image:-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color});",
-        "[sample_shortcode]:gradient:left:declaration": "border: 1px solid transparent-trans",
-        "gradient:filter": ["left", "right"]
-    },
-
-    "shortcode-option::sample_shortcode": {
-        "type": "custom",
-        "animations:selector": "selectors->selectbox"
-
-    },
-
-    "shortcode-option2": {
-        "type": "custom",
-        "gradient:selector": "selectors->selectbox",
-        "gradient:selector2": "selectors->selectbox",
-        "gradient:selector3": "selectors->selectbox",
-        "transitions:selector": "selectors->selectbox",
-        "gradient:left:selector": "selector-value-overrides->valueover",
-        "gradient:up:selector": "selector-value-overrides->valueover",
-        "[sample_shortcode]:gradient:selector": "selector-shortcode-overrides->shortover",
-        "[sample_shortcode]:gradient:left:selector": " .my-test-selector",
-
-        "gradient:filter": ["left", "right"]
-    }
 }
