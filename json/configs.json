@@ -1,8 +1,8 @@
 {
-    "total_shortcodes": 2,
+    "total_shortcodes": 5,
     "css_file_name": "shortcodes.css",
     "css_file_path": "shortcode-cssg/css/",
     "css_lib_path": "json/",
-    "demo_mode": "off",
+    "demo_mode": "on",
     "generate_css_stylesheet": true
 }

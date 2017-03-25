@@ -1,15 +1,15 @@
 <?php
 
-function shortcode_cssg_declaration_libraries( $library, $shortcode ){
+function register_declaration_libraries( $library ){
     
     $library['selectors'] = array(
-        "gradient"          => " .library-selectbox $.library-selectbox",
-        "transitions"       => " .library-selectbox $.library-selectbox",
-        "selectbox2"        => " .library-selectbox2",
-        "selectbox3"        => " .library-selectbox3"
+        "gradient-demo"          => " .library-selectbox $.library-selectbox",
+        "transitions-demo"       => " .library-selectbox $.library-selectbox",
+        "selectbox2-demo"        => " .library-selectbox2",
+        "selectbox3-demo"        => " .library-selectbox3"
     );
     
-    $library['gradient'] = array(
+    $library['gradient-dl-demo'] = array(
         
         'left'=> array(
             'border'    => '1px solid',
@@ -50,7 +50,7 @@ function shortcode_cssg_declaration_libraries( $library, $shortcode ){
         ),
     );
         
-    $library['transitions'] = array(
+    $library['transitions-dl-demo'] = array(
         
         'left'=> array(
             'border'    => '1px solid',
@@ -95,5 +95,5 @@ function shortcode_cssg_declaration_libraries( $library, $shortcode ){
     
 }
 
-add_filter( 'css_declaration_library', 'shortcode_cssg_declaration_libraries' );
+add_filter( 'css_declaration_library', 'register_declaration_libraries' );
 

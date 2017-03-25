@@ -1,12 +1,16 @@
 <?php
 
+add_filter( 'shortcode_css_properties','register_css_properties' );
+add_filter( 'shortcode_css_properties','register_configured_properties' );
+
 /*
  * Native and custom css properties
 */
-function shortcode_cssg_properties( $css_properties, $selectors ){
+function register_css_properties( $css_properties){
     
-     $css_properties[] = array(
-        'background'                => '',
+	$css_properties['native'] = array(
+
+		'background'                => '',
         'background-color'          => '',
         'background-opacity'        => '',
         'background-image'          => '',
@@ -55,57 +59,125 @@ function shortcode_cssg_properties( $css_properties, $selectors ){
         'text-align'                => '',
         'opacity'                   => '',
         'cursor'                    => '',
-        'headerbox-background:background'   => ' .headerbox',
-        'headerbox-font-size:font-size'     => ' .headerbox',
-        'headerbox-margin:margin'           => ' .headerbox',
-        'headerbox-padding:padding'         => ' .headerbox',
-        'headerbox-color:color'             => ' .headerbox',
-        'headerbox-hover:color'             => ' .headerbox h2:hover',
-     ),
-    
-     /* 
-      * Custom propoerty built with multiple native applications. When a value 
-      * is set for this property both margin-left and  margin-right properties 
-      * will be set to the give value.
-      */
-   $css_properties['headerbox-margins'] => array(
-        'type'          => 'custom:native',
-        'properties'    => array ( 'margin-left', 'margin-up' ),
-        'selector'      => ' .headerbox',
-        'left'          => $selectors['headerbox'],
-        'up'            => $selectors['gradient-up'],
-        '[sample_shortcode]:left'  => $selectors['sample-shortcode'],
-    );
 
-    // Custom css property with multiple declaration libraries assigned
-    $css_properties['gradient']  => array(
-        'type'                              => 'custom',
-        'gradient'                          => '', // Applies $selectors['gradient'] to gradient declaration.
-        'transitions'                       => 'headerbox', // Applies $selectors['headerbox].
-        'gradient:left'                     => $selectors['headerbox'], // Explicit selector assingment.
-        'gradient:up'                       => 'valueover',
-        '[sample_shortcode]:gradient'       => 'shortover',
-        '[sample_shortcode]:gradient:left'  => ' .my-test-selector myheight, $.my-selector',
-        'gradient:left:declaration'         => '-webkit-border-image:-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color});',
-        '[sample_shortcode]:gradient:left:declaration'  => 'border: 1px solid transparent-trans',
-        'gradient:filter'                               =>  array( 'left', 'right' )
-    ),
-           
+	 );
+
+	$css_properties['custom'] = array(
+
+		'headerbox-background-demo:background'	=> ' .headerbox',
+		'headerbox-height-demo:height'   		=> ' .headerbox header',
+		'headerbox-font-size-demo:font-size'    => ' .headerbox header',
+        'headerbox-margin-demo:margin'          => ' .headerbox',
+        'headerbox-padding-demo:padding'        => ' .headerbox',
+        'headerbox-color-demo:color'            => ' .headerbox',
+        'headerbox-hover-demo:color'            => ' .headerbox h2:hover',
+        'contentbox-padding-demo:padding'		=> ' .contentbox',
+        'contentbox-height-demo:height'			=> ' .contentbox',
+
+     );
+
+	return $css_properties;
+}
+
+
+/*
+ * Native and custom css properties
+*/
+function register_configured_properties( $css_properties ){
+
+	$css_properties['configured'] = array(
+
+//		'gradient-demo:sample_shortcode' 	=> array(
+//			'gradient-demo'						=> 'gradient-shortcode-GLOBAL',
+//		),
+
+//		'cssg-contentbox-demo' 		=> array(
+//			'properties'    			=> array ( 'margin-left', 'margin-top' ),
+//			'selector'      			=> ' .contenbox-selector',
+//			'left'          			=> 'headerbox' ,
+//			'[sample_shortcode]:left'	=> ' .sample-shortcode-SELECO',
+//			'[sample_shortcode]:up'		=> 'sample-shortcode-SELECO',
+//		),
+////
+//	   	'gradient-demo'							=> array(
+//			'gradient-dl-demo'                          => 'gradient-selector', // Applies $selectors['gradient'] to gradient declaration.
+//			'gradient-dl-demo:left'                     => 'gradient-left-selector', // Explicit selector assingment.
+//			'gradient-dl-demo:up'                       => 'gradient-up-selector',
+//			'gradient-demo:filter'					 =>  array( 'left', 'up' ),
+//			'gradient-demo:left:declaration'         => ' .gradient-left-DECO',
+//			'transitions'                       	 => 'transitions-selector', // Applies $selectors['headerbox].
+//			'transitions:left'						 => 'transitions-left-selector', // Applies $selectors['headerbox].
+//			'[sample_shortcode2]:gradient-demo'      => 'sample-shortcode-gradient-SELECO',
+//			'[sample_shortcode2]:gradient-demo:left' => ' .sample-shortcode-gradient-left-css-SELECO',
+//			'[sample_shortcode]:gradient-demo:left:declaration'  => 'border: 1px solid transparent-trans',
+//			'[sample_shortcode]:transitions-demo:left:declaration' => 'border: 1px solid transitions-trans',
+//    	),
+
+	);
+
+	return $css_properties;
+}
+
+
+//	// Custom css property with multiple declaration libraries assigned
+//    $css_properties['gradient-demo']  = array(
+//        'type'                              => 'custom',
+//        'gradient-demo'                          => 'gradient-selector', // Applies $selectors['gradient'] to gradient declaration.
+//        'gradient-demo:left'                     => 'gradient-left-selector', // Explicit selector assingment.
+//        'gradient-demo:up'                       => 'gradient-up-selector',
+//		'gradient-demo:filter'					=>  array( 'left', 'up' ),
+//		'gradient-demo:left:declaration'        => ' .gradient-left-DECO',
+//		'transitions'                       	=> 'transitions-selector', // Applies $selectors['headerbox].
+//		'transitions:left'						=> 'transitions-left-selector', // Applies $selectors['headerbox].
+//		'[sample_shortcode2]:gradient-demo'     => 'sample-shortcode-gradient-SELECO',
+//        '[sample_shortcode2]:gradient-demo:left' => ' .sample-shortcode-gradient-left-css-SELECO ',
+//        '[sample_shortcode2]:gradient-demo:left:declaration'  => 'border: 1px solid transparent-trans',
+//        '[sample_shortcode]:transitions-demo:left:declaration'  => 'border: 1px solid transitions-trans',
+//    );
+
+	// Custom css property with multiple declaration libraries assigned
+//    $css_properties['gradient-demo:sample_shortcode']  = array(
+//        'type'                              => 'custom',
+//        'gradient'                          => 'gradient-selector', // Applies $selectors['gradient'] to gradient declaration.
+//        'gradient:left'                     => 'gradient-left-selector', // Explicit selector assingment.
+//        'gradient:up'                       => 'gradient-up-selector',
+//		'gradient:filter'					=>  array( 'left', 'right' ),
+//		'gradient:left:declaration'         => ' .gradient-left-DECO',
+//		'transitions'                       => 'transitions-selector', // Applies $selectors['headerbox].
+//        '[sample_shortcode2]:gradient'      => 'sample-shortcode-gradient-SELECO',
+//        '[sample_shortcode]:gradient:left'  => ' .sample-shortcode-gradient-left-css-SELECO ',
+//        '[sample_shortcode]:gradient:left:declaration'  => 'border: 1px solid transparent-trans',
+//    );
+//
+//    /*
+//     * Demonstration on how to create a shortcode override.
+//     */
+//    $css_properties['sample-option'] = array(
+//        'type'											=> 'custom',
+//        'gradient'                             			=> 'gradient-selector',
+//        'transitions'                          			=> 'transitions-selector',
+//        'gradient:left'                        			=> 'gradient-left-selector',
+//        'gradient:up'                          			=> 'gradient-up-selector',
+//        '[sample_shortcode]:gradient'          			=> 'sample-shortcode-gradient-selector',
+//        '[sample_shortcode]:gradient:left'     			=> ' .sample-shortcode-gradient-left-selector',
+//        'gradient:left:declaration'						=>  '-webkit-border-image: gradient-left-DECO',
+//        '[sample_shortcode]:gradient:left:declaration'  => 'border: sample-shortcode-gradient-left-DECO',
+//        'gradient:filter'                               =>  array( 'left', 'right' )
+//    );
+//
     /* 
      * Demonstration on how to create a shortcode override.
      */
-    $css_properties['sample-option::sample_shortcode']  => array(
-        'type'                                          => 'custom',
-        'gradient'                             => 'selectbox',
-        'transitions'                          => 'selectbox',
-        'gradient:left'                        => 'valueover',
-        'gradient:up'                          => 'valueover',
-        '[sample_shortcode]:gradient'          => 'shortover',
-        '[sample_shortcode]:gradient:left'     => ' .my-test-selector',
-        'gradient:left:declaration'                     =>  '-webkit-border-image:-webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), {gradient-color});',
-        '[sample_shortcode]:gradient:left:declaration'  => 'border: 1px solid transparent-trans',
-        'gradient:filter'                               =>  array( 'left', 'right' )
-    ),
-}
+//    $css_properties['gradient-demo:sample_shortcode'] = array(
+//        'type'									=> 'custom',
+//        'gradient'                             	=> 'gradient-shortcode-override',
+//    );
+	//
+    /*
+     * Demonstration on how to create a shortcode override.
+     */
+//    $css_properties['gradient-demo:sample_shortcode2'] = array(
+//        'type'									=> 'custom',
+//        'gradient'                             	=> 'gradient-shortcode-override',
+//    );
 
-add_filter( 'register_css_properties','shortcode_css_properties' );

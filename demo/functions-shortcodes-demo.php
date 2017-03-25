@@ -1,162 +1,169 @@
 <?php
 
-add_shortcode( 'sample_shortcode', 'sample_shortcode');
-//add_shortcode( 'sample_shortcode2', 'sample_shortcode2');
-////add_shortcode( 'sample_shortcode3', 'sample_shortcode3');
-////add_shortcode( 'sample_shortcode4', 'sample_shortcode4');
-////add_shortcode( 'sample_shortcode5', 'sample_shortcode5');
+add_shortcode( 'cssg_sample_shortcode', 'cssg_sample_shortcode');
+add_shortcode( 'cssg_sample_shortcode2', 'cssg_sample_shortcode2');
+add_shortcode( 'cssg_sample_shortcode3', 'cssg_sample_shortcode3');
+add_shortcode( 'cssg_sample_shortcode4', 'cssg_sample_shortcode4');
+add_shortcode( 'cssg_sample_shortcode5', 'cssg_sample_shortcode5');
 
-function sample_shortcode( $atts, $content, $shortcode ){
-
-    $defaults = array(
-
-        'id'                =>'shortcode-1',
-        'class'             =>'shortcode-1',
-        'gradient-color'    =>'#123762',
-        'font-size'         =>'',
-        'text-align'        =>'center',
-        'padding'           =>'8px',
-        'color'             =>'white',
-        'background-color'  =>'#004b6b',
-        'margin-left'       =>'75px',
-    );
-
-    $defaults = shortcode_atts( $defaults, $atts , $shortcode );
-
-    extract( $defaults ) ;
-
-    shortcode_cssg( $shortcode, $defaults );
-
-    return "<div id='$id' class='$class'>$content</div>";
-}
-
-function sample_shortcode2( $atts, $content, $shortcode ){
+function cssg_sample_shortcode( $atts, $content, $shortcode ){
 
     $defaults = array(
 
-        'id'				=> 'shortcode-2',
-        'class'				=> 'shortcode-2',
-        'header'			=> 'Hover Me.... I\'m Going In!',
-        'min-height'		=> '300px',
-        'line-height'		=> '34px',
-        'text-align'        => 'center',
-        'padding'           => '8px',
-        'border'  			=> '1px solid lightgrey',
-		// custom css properties.
-        'headerbox-header-size'	=> '34px',
-        'headerbox-font-size'	=> '18px',
-        'headerbox-margin'		=> '0 0 20px 0',
-        'headerbox-padding'		=> '20px 0',
-        'headerbox-color'  		=> 'white',
-        'headerbox-hover'  		=> 'lightgreen',
-        'headerbox-background'  => '#004b6b',
+        'id'                		=> 'shortcode-demo-1',
+        'class'             		=> 'shortcode-demo-1',
+        'header'            		=> 'Add Any Native or Custom CSS Attribute!',
+        'font-size'         		=> '16px',
+        'text-align'        		=> 'center',
+        'padding'           		=> '8px',
+		'border'  					=> '1px solid lightgrey',
+        'headerbox-padding-demo' 	=> '24px 0 45px 0',
+        'headerbox-background-demo' => '#4a9f3b',
+		'headerbox-font-size-demo' 	=> '28px',
+		'headerbox-color-demo' 		=> 'white',
+        'contentbox-padding-demo'   => '20px 0 0 0',
+        'contentbox-height-demo'    => '200px',
+		'contentbox-demo'			=> '',
+
     );
 
-    $defaults = shortcode_atts( $defaults, $atts , $shortcode );
+    $defaults = shortcode_atts( $defaults, $atts , $shortcode, 'demo' );
 
-    extract( $defaults ) ;
+    extract( $defaults );
 
     shortcode_cssg( $shortcode, $defaults );
 
-	return "<div id='{$id}' class='promo-box{$class}'><div class='headerbox'><header><h2>{$header}</h2></header></div><div class='content-box'>{$content}</div></div>";
-
+   	return "<div id='{$id}' class='promo-box{$class}'><div class='headerbox'><header>{$header}</header></div><div class='contentbox'>{$content}</div></div>";
 }
 
-function sample_shortcode3( $atts, $content, $shortcode ){
+function cssg_sample_shortcode2( $atts, $content, $shortcode ){
 
     $defaults = array(
 
-        'id'					=>'shortcode-3',
-        'class'					=>'shortcode-3',
-		'header'				=>'Got Gradients?',
-		'subheader'				=>'A shortcode created using a simple custom css property',
-        'line-height'			=>'34px',
-        'text-align'        	=>'center',
-        'padding'           	=>'8px',
-        'border'  				=>'1px solid lightgrey',
-		// custom css properties.
-        'headerbox-header-size'	=> '50px',
-        'headerbox-font-size'	=> '18px',
-        'headerbox-margin'		=> '0 0 20px 0',
-		'headerbox-padding'		=>'60px 0',
-        'headerbox-color'  		=> 'white',
-        'gradient'				=> "steller",
-        'gradient-left'			=> "#7474BF",
-        'gradient-right'		=> "#348AC7",
+        'id'                		=> 'shortcode-demo-2',
+		'class'						=> 'shortcode-demo-2',
+        'header'					=> 'Hover Me....<em> I\'m Going In!</em>',
+        'min-height'				=> '300px',
+        'line-height'				=> '34px',
+        'text-align'        		=> 'center',
+        'padding'           		=> '8px',
+        'border'  					=> '1px solid lightgrey',
+        'headerbox-padding-demo' 	=> '24px 0 45px 0',
+        'headerbox-background-demo' => '#004b6b',
+		'headerbox-font-size-demo' 	=> '28px',
+		'headerbox-color-demo' 		=> 'white',
+        'contentbox-padding-demo'   => '20px 0 0 0',
+        'contentbox-height-demo'    => '200px',
+		'contentbox-demo'			=> '',
+
     );
 
-    $defaults = shortcode_atts( $defaults, $atts , $shortcode );
+    $defaults = shortcode_atts( $defaults, $atts , $shortcode, 'demo' );
 
-    extract( $defaults ) ;
+    extract( $defaults );
 
     shortcode_cssg( $shortcode, $defaults );
 
-    return "<div id='$id' class='$class'><div class='headerbox gradient'><header><h2>$header</h2></header><p>$subheader</p></div>$content</div>";
+   	return "<div id='{$id}' class='promo-box{$class}'><div class='headerbox'><header>{$header}</header></div><div class='contentbox'>{$content}</div></div>";
 }
 
-function sample_shortcode4( $atts, $content, $shortcode ){
+function cssg_sample_shortcode3( $atts, $content, $shortcode ){
 
     $defaults = array(
 
-        'id'				=>'shortcode-4',
-        'class'				=>'shortcode-4',
-		'header'			=>'On The Edge? Round Things Off!',
-		'subheader'			=>'Shorcode CSS Generator makes it easy for you when your shortcode need options for shapping.',
-        'line-height'		=>'34px',
-        'text-align'        =>'center',
-        'padding'           =>'8px',
-        'border'  			=>'1px solid lightgrey',
+        'id'						=> 'shortcode-demo-3',
+        'class'						=> 'shortcode-demo-3',
+		'header'					=> 'Got Gradients?',
+		'subheader'					=> 'A shortcode created using a simple custom css property',
+        'line-height'				=> '34px',
+        'text-align'        		=> 'center',
+        'padding'           		=> '8px',
+        'border'  					=> '1px solid lightgrey',
+        'headerbox-padding-demo' 	=> '24px 0 45px 0',
+        'headerbox-background-demo' => '#7474BF',
+		'headerbox-font-size-demo' 	=> '28px',
+		'headerbox-color-demo' 		=> 'white',
+        'contentbox-padding-demo'   => '20px 0 0 0',
+        'contentbox-height-demo'    => '200px',
+		'contentbox-demo'			=> '',
+		'gradient-demo'				=> "steller",
+        'gradient-left'				=> "#7474BF",
+        'gradient-right'			=> "#348AC7",
 
-		// custom css properties.
-        'headerbox-header-size'	=> '40px',
-        'headerbox-font-size'	=> '18px',
-        'headerbox-margin'		=> '0 0 20px 0',
-		'headerbox-padding'	 	=> '60px 0',
-        'headerbox-color'  		=> 'white',
-		'gradient'				=> "maroon",
     );
 
-    $defaults = shortcode_atts( $defaults, $atts , $shortcode );
+    $defaults = shortcode_atts( $defaults, $atts , $shortcode, 'demo' );
 
-    extract( $defaults ) ;
+    extract( $defaults );
 
     shortcode_cssg( $shortcode, $defaults );
 
-    return "<div id='$id' class='$class'><div class='headerbox gradient'><header>$header</header><p>$subheader</p></div>$content</div>";
+   	return "<div id='{$id}' class='promo-box{$class}'><div class='headerbox'><header>{$header}</header></div><div class='contentbox'>{$content}</div></div>";
 }
 
-function sample_shortcode5( $atts, $content, $shortcode ){
-
-	$image_url = get_template_directory_uri() . '/shortcode-cssg/samples/image.jpg';
+function cssg_sample_shortcode4( $atts, $content, $shortcode ){
 
     $defaults = array(
 
-        'id'				=> 'shortcode-5',
-        'class'				=> 'shortcode-5',
-		'header'			=> 'On The Edge? Round Things Off!',
-		'subheader'			=> 'Shorcode CSS Generator makes it easy for you when your shortcode need options for shapping.',
-        'line-height'		=> '34px',
-        'text-align'        => 'center',
-        'padding'           => '8px',
-        'border'  			=> '1px solid lightgrey',
+        'id'						=> 'shortcode-demo-4',
+        'class'						=> 'shortcode-demo-4',
+		'header'					=> 'On The Edge? Round Things Off!',
+		'subheader'					=> 'Shorcode CSS Generator makes it easy for you when your shortcode need options for shapping.',
+        'line-height'				=> '34px',
+        'text-align'        		=> 'center',
+        'padding'           		=> '8px',
+        'border'  					=> '1px solid lightgrey',
+        'headerbox-padding-demo' 	=> '24px 0 45px 0',
+        'headerbox-background-demo' => 'maroon',
+		'headerbox-font-size-demo' 	=> '28px',
+		'headerbox-color-demo' 		=> 'white',
+        'contentbox-padding-demo'   => '20px 0 0 0',
+        'contentbox-height-demo'    => '200px',
+		'contentbox-demo'			=> '',
+		'gradient-demo'				=> "steller",
+        'gradient-left'				=> "#7474BF",
+        'gradient-right'			=> "#348AC7",
 
-		// custom css properties.
-        'headerbox-header-size'	=> '40px',
-        'headerbox-font-size'	=> '18px',
-        'headerbox-margin'		=> '0 0 20px 0',
-		'headerbox-padding'	 	=>'60px 0',
-        'headerbox-color'  		=> 'white',
-		'headerbox-background'  => "black url( $image_url ) center no-repeat"
     );
 
-    $defaults = shortcode_atts( $defaults, $atts );
+    $defaults = shortcode_atts( $defaults, $atts , $shortcode, 'demo' );
 
-    extract( $defaults ) ;
+    extract( $defaults );
 
     shortcode_cssg( $shortcode, $defaults );
 
-    return "<div id='$id' class='$class'><div class=><div class='headerbox gradient'></div>$content</div>";
-//	<header>$header</header><p>$subheader</p>
-
+   	return "<div id='{$id}' class='promo-box{$class}'><div class='headerbox'><header>{$header}</header></div><div class='contentbox'>{$content}</div></div>";
 }
 
+function cssg_sample_shortcode5( $atts, $content, $shortcode ){
+
+	$image_url =  get_template_directory_uri() .  '/libs/shortcode-cssg/demo/image.jpg';
+
+    $defaults = array(
+
+        'id'						=> 'shortcode-demo-5',
+        'class'						=> 'shortcode-demo-5',
+		'header'					=> '',
+		'subheader'					=> 'Shorcode CSS Generator makes it easy for you when your shortcode need options for shapping.',
+        'line-height'				=> '34px',
+        'text-align'        		=> 'center',
+        'padding'           		=> '8px',
+        'border'  					=> '1px solid lightgrey',
+        'headerbox-padding-demo' 	=> '100px 0 100px 0',
+        'headerbox-background-demo' => "black url( $image_url ) center no-repeat",
+		'headerbox-font-size-demo' 	=> '28px',
+		'headerbox-color-demo' 		=> 'white',
+        'contentbox-padding-demo'   => '20px 0 0 0',
+        'contentbox-height-demo'    => '200px',
+		'contentbox-demo'			=> '',
+
+    );
+
+    $defaults = shortcode_atts( $defaults, $atts , $shortcode, 'demo' );
+
+    extract( $defaults );
+
+    shortcode_cssg( $shortcode, $defaults );
+
+   	return "<div id='{$id}' class='promo-box{$class}'><div class='headerbox'><header>{$header}</header></div><div class='contentbox'>{$content}</div></div>";
+}
